@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
+from tkinter import messagebox
 
 
 class IMS:
@@ -36,6 +37,20 @@ class IMS:
 
         def show_frame2():
             dashBoardFrame.tkraise()     
+
+
+        #********************************CALCULATOR FUNCTION*************************
+        def change(event=None):  # Added default event parameter
+                a = int(totalCost1.get())
+                b = int(cashBox.get())  # Get value from totalCost Entry widget
+                c = b-a
+                changeText.delete(0, tk.END)
+                changeText.insert(0, str(c))
+                
+
+            
+
+    
 
         #=====================================TITILE==================================
 
@@ -148,34 +163,35 @@ class IMS:
 
         cashRecieved = Label(calciFrame,text="Money Received",font=("Arial",10,"bold"),bg="white").place(x=5,y=65)
         rupees = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=92)
-        cashBox = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=95,height=30)
+        cashBox = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white")
+        cashBox.place(x=46,y=95,height=30)
 
         totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold"),bg="white").place(x=5,y=145)
         rupeesTotal = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=173)
-        totalCost = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=175,height=30)
+        totalCost1 = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,font=("Arial",12),bg="white")
+        totalCost1.place(x=46,y=175,height=30)
 
 
         rupeesChange = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=235)
-        changeText = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=235,height=30)
-        changeBtn = Button(calciFrame,text="CHANGE",relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold")).place(x=210,y=237)
+        changeText = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white")
+        changeText.place(x=46,y=235,height=30)
+        changeBtn = Button(calciFrame,text="CHANGE",relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"),command=change).place(x=210,y=237)
 
 
-
-
-        #===========money==================
+        #=================================money============================================
         billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         moneyFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        #============bill==============
-        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
-        billFrame.place(x=735,y=5,width=420,height=570)
+        #==================================bill============================================
+        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        billFrame.place(x=735,y=5,width=415,height=563)
 
-        innerBillFrame = Frame(billFrame,bd=4,relief=RIDGE)
-        innerBillFrame.place(x=5,y=5,width=404,height=555)
+        innerBillFrame = Frame(billFrame,bd=3,relief=RIDGE)
+        innerBillFrame.place(x=3,y=2,width=404,height=553)
 
-        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3).pack(side=TOP,fill=X)
+        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",12,"bold")).pack(side=TOP,fill=X)
 
 
 

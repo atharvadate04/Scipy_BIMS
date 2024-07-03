@@ -61,17 +61,14 @@ class IMS:
                 messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
             conn.close()
 
-        # def deleteproduct(event=None):
-        #     conn = sql.connect("ProductList.db")
-        #     cursor = conn.cursor() 
+        def deleteproduct(event=None):
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor() 
 
-        #     cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
-        #     existing_product = cursor.fetchone()
 
-        #     if existing_product:
-        #         cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
-
-        #     conn.close()           
+            cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
+            conn.commit() 
+            conn.close()           
 
         def show_frame1():
             adminFrame.tkraise() 

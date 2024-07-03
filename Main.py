@@ -7,9 +7,9 @@ class IMS:
         self.main_window = main_window
         self.main_window.geometry("1380x700+0+0")
         self.main_window.title("Scipy Bills and Inventory Management")
-        self.main_window.iconbitmap("D:/SciPy/Resources/Dmart .ico")
+        self.main_window.iconbitmap("Dmart .ico")
         self.main_window.configure(bg="#BEE9E8")
-        self.titleIcon = PhotoImage(file="D:/SciPy/Resources/SciPy.png")
+        self.titleIcon = PhotoImage(file="SciPy.png")
 
 
 

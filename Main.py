@@ -20,25 +20,46 @@ class IMS:
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER, price REAL, quantity INTEGER)")
-            
-            # Check if the product already exists
-            product_id = idBox.get()
-            cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
-            result = cursor.fetchone()
-            
-            if result:
-                # Product exists, update the quantity
-                current_quantity = result[0]
-                new_quantity = current_quantity + int(quantityBox.get())
-                cursor.execute("UPDATE productlist SET quantity=? WHERE id=?", (new_quantity, product_id))
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+
+            # Check if the product ID already exists
+            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+            existing_product = cursor.fetchone()
+
+            if existing_product:
+                messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
             else:
-                # Product does not exist, insert new product
-                cursor.execute("INSERT INTO productlist VALUES (?, ?, ?, ?)", (nameBox.get(), product_id, priceBox.get(), quantityBox.get()))
+                cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
+                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
+                conn.commit()
+                messagebox.showinfo("Success", "Product added successfully.")
             
-            conn.commit()
             conn.close()
 
+        def updateProduct(event=None):
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
+            
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+            #=============UPDATE QUANTITY BY ADDITION========
+            product_id = int(idBox.get())
+            product_quantity = int(quantityBox.get())
+            cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
+            result = cursor.fetchone()
+            #===========================================
+            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+            existing_product = cursor.fetchone()
+
+            if existing_product:
+                current_quantity = result[0]
+                new_quantity = current_quantity + product_quantity
+                cursor.execute("UPDATE productlist SET pro_name = ?, price = ?, quantity = ? WHERE id = ?",
+                            (nameBox.get(), priceBox.get(), new_quantity, idBox.get()))
+                conn.commit()
+                messagebox.showinfo("Success", "Product updated successfully.")
+            else:
+                messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
+            conn.close()
 
         def show_frame1():
             adminFrame.tkraise() 
@@ -130,7 +151,7 @@ class IMS:
 
         addBtn = Button(productPanel, text="ADD", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=addProduct)
         addBtn.place(x=30, y=420)
-        updateBtn = Button(productPanel, text="UPDATE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"))
+        updateBtn = Button(productPanel, text="UPDATE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=updateProduct)
         updateBtn.place(x=150, y=420)
         deleteBtn = Button(productPanel, text="DELETE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"))
         deleteBtn.place(x=270, y=420)

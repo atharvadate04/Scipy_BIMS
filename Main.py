@@ -186,13 +186,16 @@ class IMS:
         changeBtn = Button(calciFrame,text="CHANGE",relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"),command=change).place(x=210,y=237)
 
 
-        #=================================money============================================
-        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
+        #=================================Options============================================
         moneyFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        #==================================bill============================================
+        ad = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=10,height=2,relief=RAISED).place(x=10,y=62)
+
+
+
+        #==================================Bill============================================
         billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
         billFrame.place(x=735,y=5,width=415,height=563)
 
@@ -200,16 +203,6 @@ class IMS:
         innerBillFrame.place(x=3,y=2,width=404,height=553)
 
         billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",12,"bold")).pack(side=TOP,fill=X)
-
-
-
-
-
-
-
-
-
-
 
 
 main_window = Tk()

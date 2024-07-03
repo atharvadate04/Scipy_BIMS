@@ -16,21 +16,50 @@ class IMS:
         self.main_window.configure(bg="#BEE9E8")
         self.titleIcon = PhotoImage(file="SciPy.png")
 
-        def addProduct(event = NONE):
-            conn = sql.connect("ProductList.db") 
-            cursor = conn.cursor() 
+        def addProduct(event=None):
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
             
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
 
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name BLOB,id INTEGER, price REAL(5,2), quantity INTEGER)") 
+            # Check if the product ID already exists
+            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+            existing_product = cursor.fetchone()
 
-            PrePro = "SELECT * FROM productlist"
-            if PrePro == idBox.get():
-                cursor.execute("UPDATE productlist SET quantity WHERE first_name = 'John';")
-
-            cursor.execute("INSERT INTO productlist VALUES (?,?,?,?)",(nameBox.get(),idBox.get(),priceBox.get(),quantityBox.get())) 
-            conn.commit()
+            if existing_product:
+                messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
+            else:
+                cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
+                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
+                conn.commit()
+                messagebox.showinfo("Success", "Product added successfully.")
+            
             conn.close()
 
+        def updateProduct(event=None):
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
+            
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+            #=============UPDATE QUANTITY BY ADDITION========
+            product_id = int(idBox.get())
+            product_quantity = int(quantityBox.get())
+            cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
+            result = cursor.fetchone()
+            #===========================================
+            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+            existing_product = cursor.fetchone()
+
+            if existing_product:
+                current_quantity = result[0]
+                new_quantity = current_quantity + product_quantity
+                cursor.execute("UPDATE productlist SET pro_name = ?, price = ?, quantity = ? WHERE id = ?",
+                            (nameBox.get(), priceBox.get(), new_quantity, idBox.get()))
+                conn.commit()
+                messagebox.showinfo("Success", "Product updated successfully.")
+            else:
+                messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
+            conn.close()
 
         def show_frame1():
             adminFrame.tkraise() 
@@ -122,7 +151,7 @@ class IMS:
 
         addBtn = Button(productPanel, text="ADD", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=addProduct)
         addBtn.place(x=30, y=420)
-        updateBtn = Button(productPanel, text="UPDATE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"))
+        updateBtn = Button(productPanel, text="UPDATE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=updateProduct)
         updateBtn.place(x=150, y=420)
         deleteBtn = Button(productPanel, text="DELETE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"))
         deleteBtn.place(x=270, y=420)

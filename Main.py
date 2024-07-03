@@ -3,6 +3,9 @@ from PIL import Image, ImageTk
 from tkinter import ttk 
 import tkinter as tk
 from tkinter.messagebox import askyesno 
+import sqlite3 as sqlite
+connection = sqlite.connect("ProductList.db")
+connection.close()
 class IMS:
     def __init__(self,main_window):
         self.main_window = main_window
@@ -67,8 +70,11 @@ class IMS:
         #prdTitle = Product panel Title
         prdTitle = Label(productPanel,text="-------- Product Panel --------",font=("Arial",15,"bold"),pady=7).pack()
 
-        prdName = Label(productPanel,text="Name :",font=("Arial",11,"bold")).place(x=20,y=80)
-        nameBox = tk.Entry(productPanel,width=25,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=120,y=80,height=25)
+        prdName = Label(productPanel, text="Name :", font=("Arial", 11, "bold"))
+        prdName.place(x=20, y=80)
+        nameBox = tk.Entry(productPanel, width=25, bd=1, validate=None, relief=SOLID, font=("Arial", 12)) 
+        nameBox.place(x=120, y=80, height=25) 
+        nameBox.focus()
 
         prdId = Label(productPanel,text="ID :",font=("Arial",11,"bold")).place(x=20,y=140)
         idBox = tk.Entry(productPanel,width=25,bd=1,relief=SOLID,font=("Arial",12)).place(x=120,y=140,height=25)
@@ -94,6 +100,9 @@ class IMS:
 
         prdTableTitle = Label(productTable,text="-------- Products Table --------",font=("Arial",15,"bold"),pady=7).pack()
         
+        #==================Sql PANEL ===========================================
+
+
 
 
 

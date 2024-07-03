@@ -15,21 +15,29 @@ class IMS:
         self.main_window.configure(bg="#BEE9E8")
         self.titleIcon = PhotoImage(file="SciPy.png")
 
-        def addProduct(event = NONE):
-            conn = sql.connect("ProductList.db") 
-            cursor = conn.cursor() 
+        def addProduct(event=None):
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
             
-
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name BLOB,id INTEGER, price REAL(5,2), quantity INTEGER)") 
-
-            PrePro = "SELECT * FROM productlist"
-            if PrePro == idBox.get():
-                cursor.execute("UPDATE productlist SET quantity WHERE first_name = 'John';")
-
-            cursor.execute("INSERT INTO productlist VALUES (?,?,?,?)",(nameBox.get(),idBox.get(),priceBox.get(),quantityBox.get())) 
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER, price REAL, quantity INTEGER)")
+            
+            # Check if the product already exists
+            product_id = idBox.get()
+            cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
+            result = cursor.fetchone()
+            
+            if result:
+                # Product exists, update the quantity
+                current_quantity = result[0]
+                new_quantity = current_quantity + int(quantityBox.get())
+                cursor.execute("UPDATE productlist SET quantity=? WHERE id=?", (new_quantity, product_id))
+            else:
+                # Product does not exist, insert new product
+                cursor.execute("INSERT INTO productlist VALUES (?, ?, ?, ?)", (nameBox.get(), product_id, priceBox.get(), quantityBox.get()))
+            
             conn.commit()
-
             conn.close()
+
 
         def show_frame1():
             adminFrame.tkraise() 

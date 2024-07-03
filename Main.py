@@ -120,6 +120,12 @@ class IMS:
 
         l1 = Label(calciFrame,text="CALCULATOR",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
+        cashRecieved = Label(calciFrame,text="Money Received",font=("Arial",10,"bold")).place(x=5,y=65)
+        cashBox = tk.Entry(calciFrame,width=20,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=6,y=95,height=25)
+
+        totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold")).place(x=5,y=145)
+        totalCost = tk.Entry(calciFrame,width=20,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=6,y=175,height=25)
+
 
 
 

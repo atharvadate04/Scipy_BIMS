@@ -1,16 +1,16 @@
-#test change
 from tkinter import*
 from PIL import Image, ImageTk
 from tkinter import ttk 
+import tkinter as tk
 from tkinter.messagebox import askyesno 
 class IMS:
     def __init__(self,main_window):
         self.main_window = main_window
         self.main_window.geometry("1380x700+0+0")
         self.main_window.title("Scipy Bills and Inventory Management")
-        self.main_window.iconbitmap("Dmart .ico")
+        self.main_window.iconbitmap("D:/SciPy/Resources/Dmart .ico")
         self.main_window.configure(bg="#BEE9E8")
-        self.titleIcon = PhotoImage(file="SciPy.png")
+        self.titleIcon = PhotoImage(file="D:/SciPy/Resources/SciPy.png")
 
 
 
@@ -33,7 +33,7 @@ class IMS:
         mainLeftMenuI = Frame(self.main_window,bd=1,relief=RIDGE,bg="#CAE9FF")
         mainLeftMenuI.place(x=7,y=77,width=199,height=619)
         
-        #===================================MENU BUTTONS===============================
+        #===================================MENU BUTTONS==============================
 
         menuList = Label(mainLeftMenuI,text="MENU",font=("Arial",20,"bold"),bg="#1B4965",fg="#CAE9FF",relief=RAISED,pady=12).pack(side=TOP,fill=X)
 
@@ -62,28 +62,38 @@ class IMS:
         #===================================ADMIN PANEL WORK ============================
 
         productPanel = Frame(adminFrame,bd=3,relief=RIDGE)
-        productPanel.place(x=5,y=5,width=450,height=607)
+        productPanel.place(x=5,y=5,width=390,height=607)
 
         #prdTitle = Product panel Title
         prdTitle = Label(productPanel,text="-------- Product Panel --------",font=("Arial",15,"bold"),pady=7).pack()
 
         prdName = Label(productPanel,text="Name :",font=("Arial",11,"bold")).place(x=20,y=80)
-        nameBox = ttk.Entry(productPanel,width=50).place(x=90,y=80)
+        nameBox = tk.Entry(productPanel,width=25,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=120,y=80,height=25)
 
         prdId = Label(productPanel,text="ID :",font=("Arial",11,"bold")).place(x=20,y=140)
-        prdPrice = Label(productPanel,text="Price :",font=("Arial",11,"bold")).place(x=20,y=200)
-        prdQuantity = Label(productPanel,text="Quantity :",font=("Arial",11,"bold")).place(x=20,y=260)
+        idBox = tk.Entry(productPanel,width=25,bd=1,relief=SOLID,font=("Arial",12)).place(x=120,y=140,height=25)
 
+
+        prdPrice = Label(productPanel,text="Price :",font=("Arial",11,"bold")).place(x=20,y=200)
+        priceBox = tk.Entry(productPanel,width=25,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=120,y=200,height=25)
+
+
+        prdQuantity = Label(productPanel,text="Quantity :",font=("Arial",11,"bold")).place(x=20,y=260)
+        quantityBox = tk.Entry(productPanel,width=25,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=120,y=260,height=25)
+
+        addBtn = Button(productPanel,text="ADD",width=8,height=2,relief=RAISED,bg="#1B4965",fg="white",font=("Arial",11,"bold")).place(x=30,y=420)
+        updateBtn = Button(productPanel,text="UPDATE",width=8,height=2,relief=RAISED,bg="#1B4965",fg="white",font=("Arial",11,"bold")).place(x=150,y=420)
+        deleteBtn = Button(productPanel,text="DELETE",width=8,height=2,relief=RAISED,bg="#1B4965",fg="white",font=("Arial",11,"bold")).place(x=270,y=420)
 
 
 
         productTable = Frame(adminFrame,bd=3,relief=RIDGE)
-        productTable.place(x=459,y=5,width=697,height=607)
+        productTable.place(x=409,y=5,width=737,height=607)
 
 
 
         prdTableTitle = Label(productTable,text="-------- Products Table --------",font=("Arial",15,"bold"),pady=7).pack()
-
+        
 
 
 
@@ -98,7 +108,30 @@ class IMS:
 
         #==================DASH BOARD PANEL ===========================================
 
-        l1dash = Label(dashBoardFrame,text="DASHBOARD AREA",font=("Arial",40,"bold")).pack();
+        #==========product================
+        pSelectFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        pSelectFrame.place(x=5,y=5,width=430,height=607)
+        l1 = Label(pSelectFrame,text="PRODUCT LIST",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
+
+
+        #=============calculator==========
+        calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        calciFrame.place(x=440,y=5,width=290,height=290)
+
+        l1 = Label(calciFrame,text="CALCULATOR",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
+
+
+
+
+        #===========money==================
+        moneyFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        moneyFrame.place(x=440,y=300,width=290,height=310)
+        l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
+
+        #============bill==============
+        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        billFrame.place(x=735,y=5,width=420,height=570)
+
 
 
 

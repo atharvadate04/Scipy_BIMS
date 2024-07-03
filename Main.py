@@ -118,34 +118,47 @@ class IMS:
         #==================DASH BOARD PANEL ===========================================
 
         #==========product================
-        pSelectFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        pSelectFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         pSelectFrame.place(x=5,y=5,width=430,height=607)
         l1 = Label(pSelectFrame,text="PRODUCT LIST",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
 
         #=============calculator==========
-        calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         calciFrame.place(x=440,y=5,width=290,height=290)
 
         l1 = Label(calciFrame,text="CALCULATOR",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        cashRecieved = Label(calciFrame,text="Money Received",font=("Arial",10,"bold")).place(x=5,y=65)
-        cashBox = tk.Entry(calciFrame,width=20,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=6,y=95,height=25)
+        cashRecieved = Label(calciFrame,text="Money Received",font=("Arial",10,"bold"),bg="white").place(x=5,y=65)
+        rupees = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=92)
+        cashBox = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=95,height=30)
 
-        totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold")).place(x=5,y=145)
-        totalCost = tk.Entry(calciFrame,width=20,bd=1,validate=None,relief=SOLID,font=("Arial",12)).place(x=6,y=175,height=25)
+        totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold"),bg="white").place(x=5,y=145)
+        rupeesTotal = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=173)
+        totalCost = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=175,height=30)
+
+
+        rupeesChange = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=235)
+        changeText = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white").place(x=46,y=235,height=30)
+        changeBtn = Button(calciFrame,text="CHANGE",relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold")).place(x=210,y=237)
 
 
 
 
         #===========money==================
-        moneyFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
+        moneyFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
         #============bill==============
-        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE)
+        billFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         billFrame.place(x=735,y=5,width=420,height=570)
+
+        innerBillFrame = Frame(billFrame,bd=4,relief=RIDGE)
+        innerBillFrame.place(x=5,y=5,width=404,height=555)
+
+        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3).pack(side=TOP,fill=X)
 
 
 

@@ -61,6 +61,18 @@ class IMS:
                 messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
             conn.close()
 
+        # def deleteproduct(event=None):
+        #     conn = sql.connect("ProductList.db")
+        #     cursor = conn.cursor() 
+
+        #     cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+        #     existing_product = cursor.fetchone()
+
+        #     if existing_product:
+        #         cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
+
+        #     conn.close()           
+
         def show_frame1():
             adminFrame.tkraise() 
 
@@ -153,7 +165,7 @@ class IMS:
         addBtn.place(x=30, y=420)
         updateBtn = Button(productPanel, text="UPDATE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=updateProduct)
         updateBtn.place(x=150, y=420)
-        deleteBtn = Button(productPanel, text="DELETE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"))
+        deleteBtn = Button(productPanel, text="DELETE", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=deleteproduct)
         deleteBtn.place(x=270, y=420)
 
         productTable = Frame(adminFrame, bd=3, relief=RIDGE)

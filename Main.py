@@ -32,7 +32,7 @@ class IMS:
         mainLeftMenuI = Frame(self.main_window,bd=1,relief=RIDGE,bg="#CAE9FF")
         mainLeftMenuI.place(x=7,y=77,width=199,height=619)
         
-        #===================================MENU BUTTONS==============================
+        #===================================MENU BUTTONS===============================
 
         menuList = Label(mainLeftMenuI,text="MENU",font=("Arial",20,"bold"),bg="#1B4965",fg="#CAE9FF",relief=RAISED,pady=12).pack(side=TOP,fill=X)
 

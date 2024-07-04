@@ -145,13 +145,24 @@ class IMS:
 #=================================Delete function==================================
 
         def deleteproduct(event=None):
+            productid=idBox.get()
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
-            conn.commit()
-            clear_field(idBox)
-            conn.close()           
-            nameBox.focus()
+            cursor.execute("SELECT * FROM productlist WHERE id = ?", (productid,))
+            existing_product = cursor.fetchone()
+            if existing_product:
+                pro_name = existing_product[1]
+                confirm = messagebox.askyesno("Warning", f"Are you sure you want to delete {pro_name} with Product ID {productid}?")
+                if confirm:        
+                    cursor.execute("DELETE FROM productlist WHERE  id = ?", (productid,))
+                    conn.commit()
+                    clear_field(idBox)
+                    conn.close()
+                    idBox.focus()
+            else:
+                messagebox.showinfo("Error", f"Product with ID {productid} not found.")
+
+#=================================Showframe Function===============================
 
         def show_frame2():
             dashBoardFrame.tkraise()     

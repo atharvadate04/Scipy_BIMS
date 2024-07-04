@@ -94,7 +94,7 @@ class IMS:
                             (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
-            
+            populateListBox(productList)
             conn.close()
 
         def updateProduct(event=None):
@@ -150,19 +150,16 @@ class IMS:
 
 
 
-        # def fetchProducts():
-        #     conn = sql.connect("ProductList.db")
-        #     cursor = conn.cursor()
+        def populateListBox(productList):
+            conn = sql.connect('ProductList.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT pro_name FROM productlist")
+            rows = cursor.fetchall()
             
-        #     cursor.execute("SELECT pro_name, id, price, quantity FROM productlist")
-        #     rows = cursor.fetchall()
-            
-        #     productList.delete(0, END)  # Clear the listbox
-            
-        #     for row in rows:
-        #         productList.insert(END, f"Name: {row[0]}")
-            
-        #     conn.close()
+            for data in rows:
+                productList.insert(tk.END, data[0])
+
+            conn.close()    
         
                 
 
@@ -268,11 +265,10 @@ class IMS:
 
         scrollbar = Scrollbar(dedicateFrame,width=23)
         scrollbar.pack( side = RIGHT, fill=Y )
-        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white")
+        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER)
 
-        for data in range(60):
-            productList.insert(END,"DATA NUMBER : "+str(data+1))
 
+        populateListBox(productList)
         productList.pack(side=RIGHT,fill=BOTH,padx=1)
         scrollbar.config( command = productList.yview )
 

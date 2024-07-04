@@ -120,35 +120,63 @@ class IMS:
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             
-            product_id = int(idBox.get())
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+            product_id = idBox.get()
+            if not product_id:
+                messagebox.showinfo("Error", "Product ID is required.")
+                conn.close()
+                return
+            
+            try:
+                product_id = int(product_id)
+            except ValueError:
+                messagebox.showinfo("Error", "Invalid Product ID.")
+                conn.close()
+                return
+            
             cursor.execute("SELECT * FROM productlist WHERE id=?", (product_id,))
-            result1 = cursor.fetchone()
-            pro_name= result1[1]
-            pro_price = result1[2]
-            product_quantity = int(quantityBox1.get())
-            cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
-            result = cursor.fetchone()
-            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
             existing_product = cursor.fetchone()
-
+            
             if existing_product:
-                current_quantity = result[0]
-                new_quantity = current_quantity + product_quantity
-                cursor.execute("UPDATE productlist SET pro_name = ?, price = ?, quantity = ? WHERE id = ?",
-                            (pro_name, pro_price, new_quantity, idBox.get()))
+                # Fetch existing values from the database
+                pro_name = existing_product[1]
+                pro_price = existing_product[2]
+                current_quantity = existing_product[3]
+                
+                # Fetch new values from entry fields
+                new_name = nameBox.get().strip()
+                new_price = priceBox.get().strip()
+                new_quantity = quantityBox1.get().strip()
+                
+                # Use existing values if new values are empty or None
+                if not new_name:
+                    new_name = pro_name
+                if not new_price:
+                    new_price = pro_price
+                if not new_quantity:
+                    new_quantity = current_quantity
+                else:
+                    try:
+                        new_quantity = int(new_quantity)
+                    except ValueError:
+                        messagebox.showinfo("Error", "Invalid quantity value.")
+                        conn.close()
+                        return
+                
+                # Update the database
+                cursor.execute("UPDATE productlist SET pro_name=?, price=?, quantity=? WHERE id=?",
+                            (new_name, new_price, new_quantity, product_id))
                 conn.commit()
                 messagebox.showinfo("Success", "Product updated successfully.")
+                clear_field(nameBox)
+                clear_field(priceBox)
+                clear_field(quantityBox1)
             else:
-                messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
-
-            clear_field(nameBox)
-            clear_field(idBox)
-            clear_field(priceBox)
-            clear_field(quantityBox1)   
+                messagebox.showinfo("Error", f"Product with ID {product_id} not found.")
+            
             conn.close()
-            nameBox.focus()
             loadProducts()
+            nameBox.focus()
+
 
 #=================================Delete function==================================
 
@@ -178,12 +206,17 @@ class IMS:
 
 #================================= Load products Function===============================
         def loadProducts():
+            # Clear existing rows in the Treeview
             for item in tree.get_children():
                 tree.delete(item)
+            
+            # Fetching data from SQLite database
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM productlist")
             rows = cursor.fetchall()
+            
+            # Insert fetched data into the Treeview
             for row in rows:
                 tree.insert('', tk.END, values=row)
             conn.close()
@@ -199,34 +232,57 @@ class IMS:
                 changeText.config(state="disabled")
 
         def populateListBox(productList):
-            productList.delete(0,tk.END)
+            for item in productList.get_children():
+                productList.delete(item)
             conn = sql.connect('ProductList.db')
             cursor = conn.cursor()
-            cursor.execute("SELECT pro_name FROM productlist")
+            cursor.execute("SELECT pro_name, price FROM productlist")
             rows = cursor.fetchall()
             
             for data in rows:
-                productList.insert(tk.END, data[0])
+                productList.insert('', tk.END, values=data)
 
-            conn.close()    
-
+            conn.close()
 
         def displayBill():
             textArea.config(state="normal")   
             textArea.delete(1.0,END)
-            textArea.insert(END,'\t\t  SciPy\n\n')
             # textArea.insert(END,'\n**************************************************') 
             textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
             textArea.insert(END,'CUSTOMER DETAILS\n')
             # textArea
             textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,'NAME : ATHARVA RAVI DATE\n')
+            textArea.insert(END,'NAME : Atharva Ravi Date\n')
             textArea.insert(END,'PHONE NO. : 7276250789\n')
             textArea.insert(END,'-------------------------------------------------') 
-            
-            
+            textArea.insert(END,'Particulars                      \t Qty \t  Rate \t   Amount\n')
+            textArea.insert(END,'-------------------------------------------------') 
 
+        def addItem():
+            totalCostBox.delete(0,tk.END)
 
+            selected_items = productList.selection()
+            if not selected_items:
+                messagebox.showwarning("Warning", "Please select a product to add.")
+                return
+
+            try:
+                quantity = int(quantityBox.get())
+            except ValueError:
+                messagebox.showerror("Error", "Please enter a valid quantity.")
+                return
+
+            
+            for item in selected_items:
+                item_data = productList.item(item, 'values')
+                product_name, product_price = item_data[0], float(item_data[1])
+                total_price = product_price * quantity
+                
+                textArea.insert(tk.END, f"{product_name}\t                          {quantity}\t     {product_price}\t    {total_price}\n")
+            totalCostBox.delete(0, tk.END)
+            totalCostBox.insert(0, str(total_price))
+                
+            quantityBox.delete(0,tk.END)
 
 
 
@@ -314,10 +370,13 @@ class IMS:
 
         columns = ('id', 'pro_name', 'price', 'quantity')
         tree = ttk.Treeview(productTable, columns=columns, show='headings')
-        tree.heading('id', text='ID')
-        tree.heading('pro_name', text='Name')
-        tree.heading('price', text='Price')
-        tree.heading('quantity', text='Quantity')
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))
+        style.configure("Treeview", font=("Arial", 12)) 
+        tree.heading('id', text='ID', anchor=tk.W)
+        tree.heading('pro_name', text='Name', anchor=tk.W)
+        tree.heading('price', text='Price',anchor=tk.W)
+        tree.heading('quantity', text='Quantity',anchor=tk.W)
 
         tree.pack(fill=tk.BOTH, expand=True)
 
@@ -325,23 +384,40 @@ class IMS:
 
         #==================DASH BOARD PANEL ===========================================
         #==========product================
-        pSelectFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
-        pSelectFrame.place(x=5,y=5,width=430,height=607)
-        l1 = Label(pSelectFrame,text="PRODUCT LIST",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
+        pSelectFrame = tk.Frame(dashBoardFrame, bd=3, relief=tk.RIDGE, bg="white")
+        pSelectFrame.place(x=5, y=5, width=430, height=607)
 
-        dedicateFrame = Frame(pSelectFrame,width=280,height=500)
-        dedicateFrame.place(x=72,y=100)
+        l1 = tk.Label(pSelectFrame, text="PRODUCT LIST", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
+        l1.pack(side=tk.TOP, fill=tk.X)
 
-        scrollbar = Scrollbar(dedicateFrame,width=23)
-        scrollbar.pack( side = RIGHT, fill=Y )
+        dedicateFrame = tk.Frame(pSelectFrame, width=380, height=500)
+        dedicateFrame.place(x=25, y=100)
 
-        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER,relief=SOLID)
+        # Create a Treeview widget
+        columns = ('product', 'price')
+        productList = ttk.Treeview(dedicateFrame, columns=columns, show='headings', selectmode='extended')
+
+        # Define headings
+        productList.heading('product', text='Product')
+        productList.heading('price', text='Price')
+
+        # Define column widths
+        productList.column('product', width=200, anchor=tk.CENTER)
+        productList.column('price', width=100, anchor=tk.CENTER)
+
+        # Add a scrollbar
+        scrollbar = ttk.Scrollbar(dedicateFrame, orient="vertical", command=productList.yview)
+        productList.configure(yscroll=scrollbar.set)
+
+        # Pack the Treeview and scrollbar
+        productList.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
 
         populateListBox(productList)
 
         productList.pack(side=RIGHT,fill=BOTH,padx=1)
         scrollbar.config( command = productList.yview )
-
         #=============calculator==========
 
         calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
@@ -371,7 +447,7 @@ class IMS:
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=75)
+        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,command=addItem,relief=RAISED).place(x=30,y=75)
 
         biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill).place(x=150,y=75)
 

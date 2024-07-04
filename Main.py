@@ -360,7 +360,7 @@ class IMS:
         #==================DASH BOARD PANEL ===========================================
         #==========product================
         pSelectFrame = tk.Frame(dashBoardFrame, bd=3, relief=tk.RIDGE, bg="white")
-        pSelectFrame.place(x=5, y=5, width=430, height=607)
+        pSelectFrame.place(x=5, y=5, width=430, height=350)
 
         l1 = tk.Label(pSelectFrame, text="PRODUCT LIST", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
         l1.pack(side=tk.TOP, fill=tk.X)

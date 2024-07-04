@@ -59,6 +59,8 @@ class IMS:
                 messagebox.showinfo("Success", "Product updated successfully.")
             else:
                 messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
+
+            # fetchProducts()    
             conn.close()
 
         def deleteproduct(event=None):
@@ -82,8 +84,27 @@ class IMS:
                 a = int(totalCost1.get())
                 b = int(cashBox.get())  # Get value from totalCost Entry widget
                 c = b-a
+                changeText.config(state="normal") 
                 changeText.delete(0, tk.END)
                 changeText.insert(0, str(c))
+                changeText.config(state="disabled")
+
+
+
+        # def fetchProducts():
+        #     conn = sql.connect("ProductList.db")
+        #     cursor = conn.cursor()
+            
+        #     cursor.execute("SELECT pro_name, id, price, quantity FROM productlist")
+        #     rows = cursor.fetchall()
+            
+        #     productList.delete(0, END)  # Clear the listbox
+            
+        #     for row in rows:
+        #         productList.insert(END, f"Name: {row[0]}")
+            
+        #     conn.close()
+        
                 
 
             
@@ -171,15 +192,6 @@ class IMS:
         prdTableTitle = Label(productTable, text="-------- Products Table --------", font=("Arial", 15, "bold"), pady=7).pack()
         
         #==================Sql PANEL ===========================================
-    
-
-        
-
-
-
-
-
-
 
 
 
@@ -192,6 +204,22 @@ class IMS:
         pSelectFrame.place(x=5,y=5,width=430,height=607)
         l1 = Label(pSelectFrame,text="PRODUCT LIST",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
+        dedicateFrame = Frame(pSelectFrame,width=280,height=500)
+        dedicateFrame.place(x=72,y=100)
+
+        scrollbar = Scrollbar(dedicateFrame,width=23)
+        scrollbar.pack( side = RIGHT, fill=Y )
+        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white")
+
+        for data in range(60):
+            productList.insert(END,"DATA NUMBER : "+str(data+1))
+
+        productList.pack(side=RIGHT,fill=BOTH,padx=1)
+        scrollbar.config( command = productList.yview )
+
+
+
+
 
         #=============calculator==========
         calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
@@ -201,17 +229,17 @@ class IMS:
 
         cashRecieved = Label(calciFrame,text="Money Received",font=("Arial",10,"bold"),bg="white").place(x=5,y=65)
         rupees = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=92)
-        cashBox = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white")
+        cashBox = tk.Entry(calciFrame,width=17,bd=1,validate=None,justify="center",relief=SOLID,font=("Arial",12),bg="white")
         cashBox.place(x=46,y=95,height=30)
 
-        totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold"),bg="white").place(x=5,y=145)
-        rupeesTotal = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=173)
-        totalCost1 = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,font=("Arial",12),bg="white")
-        totalCost1.place(x=46,y=175,height=30)
+        totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold"),bg="white").place(x=5,y=141)
+        rupeesTotal = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=169)
+        totalCost1 = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
+        totalCost1.place(x=46,y=171,height=30)
 
 
         rupeesChange = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=235)
-        changeText = tk.Entry(calciFrame,width=17,bd=1,validate=None,relief=SOLID,font=("Arial",12),bg="white")
+        changeText = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,state="disabled",justify="center",font=("Arial",12),bg="white")
         changeText.place(x=46,y=235,height=30)
         changeBtn = Button(calciFrame,text="CHANGE",relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"),command=change).place(x=210,y=237)
 
@@ -221,8 +249,26 @@ class IMS:
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        ad = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=10,height=2,relief=RAISED).place(x=10,y=62)
+        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=75)
 
+        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=150,y=75)
+
+        totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
+        totalLabel.place(x=30,y=150)
+
+        totalCostBox = tk.Entry(moneyFrame,width=13,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
+        totalCostBox.place(x=120,y=150,height=32)
+
+        quantityLabel = Label(moneyFrame,text="Quantity : ",font=("Calibri",12,"bold"),bg="white")
+        quantityLabel.place(x=30,y=200)
+
+        quantityBox = tk.Entry(moneyFrame,width=7,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
+        quantityBox.place(x=120,y=200,height=35)
+
+
+        TotalBtn = Button(moneyFrame,text="Total",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=250)
+
+        printBtn = Button(moneyFrame,text="Print",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=150,y=250)
 
 
         #==================================Bill============================================
@@ -232,7 +278,7 @@ class IMS:
         innerBillFrame = Frame(billFrame,bd=3,relief=RIDGE)
         innerBillFrame.place(x=3,y=2,width=404,height=553)
 
-        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",12,"bold")).pack(side=TOP,fill=X)
+        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",15,"bold"),bg="#5FA8D3",fg="#CAE9FF").pack(side=TOP,fill=X)
 
 
 main_window = Tk()

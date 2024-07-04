@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
 from tkinter import messagebox
-from tabulate import tabulate
+
 
 class IMS:
     def __init__(self, main_window):
@@ -18,7 +18,7 @@ class IMS:
 
         self.logged_in = False  # Track if user is logged in
 
-#=================================Login window function==================================
+#=========================================================Login window function============================================================#
 
         def show_login_window():
             login_window = Toplevel(self.main_window)
@@ -65,12 +65,12 @@ class IMS:
             # Login button
             login_btn = Button(login_window, text="Login", font=("Arial", 12, "bold"), bg="#1B4965", fg="white", relief=RAISED, command=login)
             login_btn.pack(pady=10)
-
+            #Restrict background main windows activity
             login_window.transient(self.main_window)
             login_window.grab_set()
             self.main_window.wait_window(login_window)
 
-#=================================Update function==================================
+#=================================Update function==================================#
 
         def show_frame1():
             if self.logged_in:
@@ -82,7 +82,7 @@ class IMS:
             field.config(state="normal") 
             field.delete(0, tk.END)
 
-#=================================ADD function==================================
+#=================================ADD function==================================#
 
         def addProduct(event=None):
             if (nameBox.get() and idBox.get() and priceBox.get() and quantityBox1.get()):

@@ -88,7 +88,7 @@ class IMS:
             if (nameBox.get() and idBox.get() and priceBox.get() and quantityBox1.get()):
                 conn = sql.connect("ProductList.db")
                 cursor = conn.cursor()
-                
+
                 cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
 
                 # Check if the product ID already exists
@@ -102,6 +102,7 @@ class IMS:
                                 (nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get()))
                     conn.commit()
                     messagebox.showinfo("Success", "Product added successfully.")
+                    print("Product added:", nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get())
 
                     populateListBox(productList)    
                     clear_field(nameBox)
@@ -109,7 +110,8 @@ class IMS:
                     clear_field(priceBox)
                     clear_field(quantityBox1)
             else:
-                messagebox.showinfo("Warning","All Fields are Neccesary")
+                messagebox.showinfo("Warning", "All Fields are Necessary")
+            
             conn.close()
             nameBox.focus()
             loadProducts()
@@ -137,39 +139,48 @@ class IMS:
             existing_product = cursor.fetchone()
             
             if existing_product:
-                # Fetch existing values from the database
-                pro_name = existing_product[1]
-                pro_price = existing_product[2]
-                current_quantity = existing_product[3]
+                pro_name = existing_product[0]
+                pro_price = existing_product[1]
+                current_quantity = existing_product[2]
                 
-                # Fetch new values from entry fields
                 new_name = nameBox.get().strip()
                 new_price = priceBox.get().strip()
                 new_quantity = quantityBox1.get().strip()
                 
-                # Use existing values if new values are empty or None
-                if not new_name:
-                    new_name = pro_name
-                if not new_price:
-                    new_price = pro_price
-                if not new_quantity:
-                    new_quantity = current_quantity
-                else:
+                # Only update the fields that are provided by the user
+                updates = []
+                values = []
+                
+                if new_name:
+                    updates.append("pro_name=?")
+                    values.append(new_name)
+                if new_price:
+                    updates.append("price=?")
+                    values.append(float(new_price))
+                if new_quantity:
                     try:
                         new_quantity = int(new_quantity)
+                        updates.append("quantity=?")
+                        values.append(new_quantity)
                     except ValueError:
                         messagebox.showinfo("Error", "Invalid quantity value.")
                         conn.close()
                         return
                 
-                # Update the database
-                cursor.execute("UPDATE productlist SET pro_name=?, price=?, quantity=? WHERE id=?",
-                            (new_name, new_price, new_quantity, product_id))
-                conn.commit()
-                messagebox.showinfo("Success", "Product updated successfully.")
-                clear_field(nameBox)
-                clear_field(priceBox)
-                clear_field(quantityBox1)
+                if updates:
+                    # Append the product_id to the values list
+                    values.append(product_id)
+                    update_query = f"UPDATE productlist SET {', '.join(updates)} WHERE id=?"
+                    cursor.execute(update_query, values)
+                    conn.commit()
+                    messagebox.showinfo("Success", "Product updated successfully.")
+                    print(f"Updated product {product_id}: {new_name if new_name else pro_name}, {new_price if new_price else pro_price}, {new_quantity if new_quantity else current_quantity}")  # Debug statement
+                    
+                    clear_field(nameBox)
+                    clear_field(priceBox)
+                    clear_field(quantityBox1)
+                else:
+                    messagebox.showinfo("Warning", "No fields to update.")
             else:
                 messagebox.showinfo("Error", f"Product with ID {product_id} not found.")
             
@@ -178,26 +189,37 @@ class IMS:
             nameBox.focus()
 
 
+
+
 #=================================Delete function==================================
 
         def deleteproduct(event=None):
-            productid=idBox.get()
+            productid = idBox.get()
+            if not productid:
+                messagebox.showinfo("Error", "Product ID is required.")
+                return
+            
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM productlist WHERE id = ?", (productid,))
             existing_product = cursor.fetchone()
             if existing_product:
-                pro_name = existing_product[1]
+                pro_name = existing_product[0]
                 confirm = messagebox.askyesno("Warning", f"Are you sure you want to delete {pro_name} with Product ID {productid}?")
-                if confirm:        
-                    cursor.execute("DELETE FROM productlist WHERE  id = ?", (productid,))
+                if confirm:
+                    cursor.execute("DELETE FROM productlist WHERE id = ?", (productid,))
                     conn.commit()
+                    messagebox.showinfo("Success", "Product deleted successfully.")
+                    print(f"Deleted product {productid}: {pro_name}")  # Debug statement
+                    
                     clear_field(idBox)
-                    conn.close()
-                    idBox.focus()
                     loadProducts()
             else:
                 messagebox.showinfo("Error", f"Product with ID {productid} not found.")
+            
+            conn.close()
+            idBox.focus()
+
 
 #=================================Showframe Function===============================
 
@@ -206,6 +228,7 @@ class IMS:
 
 #================================= Load products Function===============================
         def loadProducts():
+            print("Loading products into the Treeview...")  # Debug statement
             # Clear existing rows in the Treeview
             for item in tree.get_children():
                 tree.delete(item)
@@ -219,7 +242,10 @@ class IMS:
             # Insert fetched data into the Treeview
             for row in rows:
                 tree.insert('', tk.END, values=row)
+            
+            print(f"Loaded {len(rows)} products.")  # Debug statement
             conn.close()
+
 
         #********************************CALCULATOR FUNCTION*************************
         def change(event=None):  # Added default event parameter
@@ -241,7 +267,7 @@ class IMS:
             
             for data in rows:
                 productList.insert('', tk.END, values=data)
-
+            loadProducts()
             conn.close()
 
         def displayBill():
@@ -255,12 +281,10 @@ class IMS:
             textArea.insert(END,'NAME : Atharva Ravi Date\n')
             textArea.insert(END,'PHONE NO. : 7276250789\n')
             textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,'Particulars                      \t Qty \t  Rate \t   Amount\n')
+            textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
             textArea.insert(END,'-------------------------------------------------') 
 
         def addItem():
-            totalCostBox.delete(0,tk.END)
-
             selected_items = productList.selection()
             if not selected_items:
                 messagebox.showwarning("Warning", "Please select a product to add.")
@@ -271,24 +295,40 @@ class IMS:
             except ValueError:
                 messagebox.showerror("Error", "Please enter a valid quantity.")
                 return
+    
+            # Enable textArea to insert text
+            textArea.config(state="normal")
 
-            
+            cumulative_total = 0
+
             for item in selected_items:
                 item_data = productList.item(item, 'values')
                 product_name, product_price = item_data[0], float(item_data[1])
                 total_price = product_price * quantity
+
+                textArea.insert(tk.END, f"{product_name}\t                  {quantity:.1f}\t      {product_price:.1f}\t      {total_price:.1f}\n")
                 
-                textArea.insert(tk.END, f"{product_name}\t                          {quantity}\t     {product_price}\t    {total_price}\n")
+                cumulative_total += total_price
+
+            # Clear the quantity box for new input
+            quantityBox.delete(0, tk.END)
+
+            # Update the totalCostBox with the new cumulative total
+            current_total = totalCostBox.get()
+            if current_total:
+                cumulative_total += float(current_total)
+            
             totalCostBox.delete(0, tk.END)
-            totalCostBox.insert(0, str(total_price))
-                
-            quantityBox.delete(0,tk.END)
+            totalCostBox.insert(0, str(cumulative_total))
 
+    # Remove selection after adding to the textArea
+            for item in selected_items:
+                productList.selection_remove(item)
 
+            # Disable textArea to prevent user editing
+            LoadProducts()
+            textArea.config(state="disabled") 
 
-
-            textArea.config(state="disabled")   
-    
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -412,12 +452,23 @@ class IMS:
         # Pack the Treeview and scrollbar
         productList.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-
         populateListBox(productList)
-
         productList.pack(side=RIGHT,fill=BOTH,padx=1)
         scrollbar.config( command = productList.yview )
+
+        def LoadProducts():
+            for item in productList.get_children():
+                productList.delete(item)
+            
+            conn = sql.connect('ProductList.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT pro_name, price FROM productlist")
+            rows = cursor.fetchall()
+            
+            for data in rows:
+                productList.insert('', tk.END, values=data)
+
+            conn.close()
         #=============calculator==========
 
         calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")

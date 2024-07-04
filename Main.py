@@ -163,7 +163,7 @@ class IMS:
                 
                 # Update the database
                 cursor.execute("UPDATE productlist SET pro_name=?, price=?, quantity=? WHERE id=?",
-                            (new_name, new_price, new_quantity+current_quantity, product_id))
+                            (new_name, new_price, new_quantity, product_id))
                 conn.commit()
                 messagebox.showinfo("Success", "Product updated successfully.")
                 clear_field(nameBox)

@@ -462,12 +462,15 @@ class IMS:
 
         #==================================Buyer Details============================================
         def submit_customer_details():
-            name = name_entry.get()
-            phone = phone_entry.get()
-            address = address_entry.get()
-            name_entry.config(state='disabled')
-            phone_entry.config(state='disabled')
-            address_entry.config(state='disabled')
+            if name_entry.get() and phone_entry.get() and address_entry.get():
+                name = name_entry.get()
+                phone = phone_entry.get()
+                address = address_entry.get()
+                name_entry.config(state='disabled')
+                phone_entry.config(state='disabled')
+                address_entry.config(state='disabled')
+            else:
+                messagebox.showinfo("Warning", "Please Enter All Details!")
         # Frame for Customer Details
         customer_frame = Frame(dashBoardFrame, bd=3, relief=RIDGE)
         customer_frame.place(x=5, y=355, width=430, height=260)  # Adjusted x, y, width, and height

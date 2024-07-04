@@ -6,7 +6,6 @@ from tkinter.messagebox import askyesno
 import sqlite3 as sql
 from tkinter import messagebox
 
-
 class IMS:
     def __init__(self, main_window):
         self.main_window = main_window
@@ -228,6 +227,8 @@ class IMS:
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
 
+        #********************************Dashboard Listbox FUNCTION*************************
+
         def populateListBox(productList):
             for item in productList.get_children():
                 productList.delete(item)
@@ -241,6 +242,8 @@ class IMS:
 
             conn.close()
 
+        #********************************Submit Customer Details FUNCTION*************************
+
         def submit_customer_details():
             if name_entry.get() and phone_entry.get() and address_entry.get():
                 name = name_entry.get()
@@ -249,31 +252,34 @@ class IMS:
                 name_entry.config(state='disabled')
                 phone_entry.config(state='disabled')
                 address_entry.config(state='disabled')
+                textArea.config(state="normal")   
+                textArea.delete(1.0,END)
+                message = f"Name: {name}\n Phone: {phone} \n Address: {address}\n"
+                textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
+                textArea.insert(END,'CUSTOMER DETAILS\n')
+                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END, message)
+                textArea.insert(END,'-------------------------------------------------') 
+                textArea.config(state="disabled")   
             else:
-                messagebox.showinfo("Warning", "Please Enter All Details!")
-
-        def displayBill():
-            textArea.config(state="normal")   
-            textArea.delete(1.0,END)
-            textArea.insert(END,'\t\t  SciPy\n\n')
-            # textArea.insert(END,'\n**************************************************') 
-            textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
-            textArea.insert(END,'CUSTOMER DETAILS\n')
-            # textArea
-            textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,'NAME : ATHARVA RAVI DATE\n')
-            textArea.insert(END,'PHONE NO. : 7276250789\n')
-            textArea.insert(END,'-------------------------------------------------') 
-            
-            
-
-
-
-
-
-
-            textArea.config(state="disabled")   
+                messagebox.showinfo("Warning", "Please Enter All Details!") 
     
+        #=====================================Reset Function==================================
+
+        def resetDash():
+            choice=messagebox.askyesno("Warning", "Are you sure you want to reset the page\nYou will lose your progress.")
+            if choice:
+                name_entry.config(state='normal')
+                phone_entry.config(state='normal')
+                address_entry.config(state='normal')
+                name_entry.delete(0,tk.END)
+                phone_entry.delete(0,tk.END)
+                address_entry.delete(0,tk.END)
+                name_entry.focus()
+                textArea.config(state="normal")  
+                textArea.delete(1.0,END)
+                textArea.config(state="disabled")
+
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -430,7 +436,8 @@ class IMS:
 
         adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=75)
 
-        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill).place(x=150,y=75)
+        resetBtn = Button(moneyFrame,text="Reset",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=resetDash)
+        resetBtn.place(x=150,y=75)
 
         totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
         totalLabel.place(x=30,y=150)

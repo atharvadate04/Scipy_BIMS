@@ -1,1 +1,1 @@
-changeText.config(state="normal") 
+Times New Roman

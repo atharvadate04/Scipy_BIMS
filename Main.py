@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
 from tkinter import messagebox
+from tabulate import tabulate
 
 class IMS:
     def __init__(self, main_window):
@@ -176,6 +177,29 @@ class IMS:
                 productList.insert(tk.END, data[0])
 
             conn.close()    
+
+
+        def displayBill():
+            textArea.config(state="normal")   
+            textArea.delete(1.0,END)
+            textArea.insert(END,'\t\t  SciPy\n\n')
+            # textArea.insert(END,'\n**************************************************') 
+            textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
+            textArea.insert(END,'CUSTOMER DETAILS\n')
+            # textArea
+            textArea.insert(END,'-------------------------------------------------') 
+            textArea.insert(END,'NAME : ATHARVA RAVI DATE\n')
+            textArea.insert(END,'PHONE NO. : 7276250789\n')
+            textArea.insert(END,'-------------------------------------------------') 
+            
+            
+
+
+
+
+
+
+            textArea.config(state="disabled")   
     
         #=====================================TITILE==================================
 
@@ -304,7 +328,7 @@ class IMS:
 
         adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=75)
 
-        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=150,y=75)
+        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill).place(x=150,y=75)
 
         totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
         totalLabel.place(x=30,y=150)
@@ -332,6 +356,17 @@ class IMS:
         innerBillFrame.place(x=3,y=2,width=404,height=553)
 
         billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",15,"bold"),bg="#5FA8D3",fg="#CAE9FF").pack(side=TOP,fill=X)
+
+        billBoardArea = Frame(innerBillFrame,bd=2,relief=GROOVE,width=400,height=545)
+        billBoardArea.pack()
+
+        billtitle = Label(billBoardArea,text="Receipt",font=("Arial",15,"bold"),bd=7,relief=GROOVE).pack(fill=X)
+
+        scrol = Scrollbar(billBoardArea,orient=VERTICAL)
+        scrol.pack(side=RIGHT,fill=Y)
+        textArea = Text(billBoardArea,font=("Times New Roman",12),yscrollcommand=scrol.set,state="disabled",padx=40)
+        textArea.pack(fill=BOTH)
+        scrol.config(command=textArea.yview)
 
         
 

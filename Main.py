@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
-from tkinter import simpledialog, messagebox
+from tkinter import messagebox
 
 
 class IMS:
@@ -17,6 +17,8 @@ class IMS:
         self.titleIcon = PhotoImage(file="SciPy.png")
 
         self.logged_in = False  # Track if user is logged in
+
+#=================================Login window function==================================
 
         def show_login_window():
             login_window = Toplevel(self.main_window)
@@ -68,14 +70,20 @@ class IMS:
             login_window.grab_set()
             self.main_window.wait_window(login_window)
 
+#=================================Update function==================================
 
-
-        # Function to show admin frame if logged in
         def show_frame1():
             if self.logged_in:
                 adminFrame.tkraise()
             else:
                 show_login_window() 
+
+        def clear_field(field):
+            field.config(state="normal") 
+            field.delete(0, tk.END)
+
+#=================================ADD function==================================
+
 
         def addProduct(event=None):
             conn = sql.connect("ProductList.db")
@@ -91,25 +99,33 @@ class IMS:
                 messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
             else:
                 cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
-                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
+                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
+
                 
                 populateListBox(productList)    
 
+
+                clear_field(nameBox)
+                clear_field(idBox)
+                clear_field(priceBox)
+                clear_field(quantityBox1)
+
             conn.close()
+            nameBox.focus()
+
+#=================================Update function==================================
 
         def updateProduct(event=None):
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             
             cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
-            #=============UPDATE QUANTITY BY ADDITION========
             product_id = int(idBox.get())
-            product_quantity = int(quantityBox.get())
+            product_quantity = int(quantityBox1.get())
             cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
             result = cursor.fetchone()
-            #===========================================
             cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
             existing_product = cursor.fetchone()
 
@@ -123,18 +139,23 @@ class IMS:
             else:
                 messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
 
-            # fetchProducts()    
+            clear_field(nameBox)
+            clear_field(idBox)
+            clear_field(priceBox)
+            clear_field(quantityBox1)   
             conn.close()
+            nameBox.focus()
+
+#=================================Delete function==================================
 
         def deleteproduct(event=None):
             conn = sql.connect("ProductList.db")
-            cursor = conn.cursor() 
-
-
+            cursor = conn.cursor()
             cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
-            conn.commit() 
+            conn.commit()
+            clear_field(idBox)
             conn.close()           
-
+            nameBox.focus()
 
         def show_frame2():
             dashBoardFrame.tkraise()     
@@ -150,8 +171,6 @@ class IMS:
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
 
-
-
         def populateListBox(productList):
             productList.delete(0,tk.END)
             conn = sql.connect('ProductList.db')
@@ -163,14 +182,7 @@ class IMS:
                 productList.insert(tk.END, data[0])
 
             conn.close()    
-        
-                
-    #       
-
-            
-
     
-
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -236,8 +248,8 @@ class IMS:
 
         prdQuantity = Label(productPanel, text="Quantity :", font=("Arial", 11, "bold"))
         prdQuantity.place(x=20, y=260)
-        quantityBox = tk.Entry(productPanel, width=25, bd=1, validate=None, relief=SOLID, font=("Arial", 12))
-        quantityBox.place(x=120, y=260, height=25)
+        quantityBox1 = tk.Entry(productPanel, width=25, bd=1, validate=None, relief=SOLID, font=("Arial", 12))
+        quantityBox1.place(x=120, y=260, height=25)
 
         addBtn = Button(productPanel, text="ADD", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=addProduct)
         addBtn.place(x=30, y=420)
@@ -250,12 +262,6 @@ class IMS:
         productTable.place(x=409, y=5, width=737, height=607)
 
         prdTableTitle = Label(productTable, text="-------- Products Table --------", font=("Arial", 15, "bold"), pady=7).pack()
-        
-        #==================Sql PANEL ===========================================
-
-
-
-
 
         #==================DASH BOARD PANEL ===========================================
 
@@ -269,10 +275,15 @@ class IMS:
 
         scrollbar = Scrollbar(dedicateFrame,width=23)
         scrollbar.pack( side = RIGHT, fill=Y )
+
         productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER,relief=SOLID)
 
+        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white")
 
-        populateListBox(productList)
+
+        for data in range(60):
+            productList.insert(END,"DATA NUMBER : "+str(data+1))
+
         productList.pack(side=RIGHT,fill=BOTH,padx=1)
         scrollbar.config( command = productList.yview )
 

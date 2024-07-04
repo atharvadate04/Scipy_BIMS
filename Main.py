@@ -274,41 +274,54 @@ class IMS:
             except ValueError:
                 messagebox.showerror("Error", "Please enter a valid quantity.")
                 return
-    
-            # Enable textArea to insert text
-            textArea.config(state="normal")
+
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
 
             cumulative_total = 0
+            text_area_content = ""
 
             for item in selected_items:
                 item_data = productList.item(item, 'values')
                 product_name, product_price = item_data[0], float(item_data[1])
-                total_price = product_price * quantity
 
-                textArea.insert(tk.END, f"{product_name}\t                  {quantity:.1f}\t      {product_price:.1f}\t      {total_price:.1f}\n")
-                
-                cumulative_total += total_price
+                # Update remaining quantity in database
+                cursor.execute("SELECT * FROM productlist WHERE pro_name=?", (product_name,))
+                existing_product = cursor.fetchone()
+                if existing_product:
+                    rem_quant = existing_product[3]
+
+                    if quantity <= rem_quant:
+                        total_price = product_price * quantity
+                        text_area_content += f"{product_name}\t{quantity}\t{product_price:.1f}\t{total_price:.1f}\n"
+                        cumulative_total += total_price
+
+                        cursor.execute("UPDATE productlist SET quantity=? WHERE pro_name=?", (rem_quant - quantity, product_name))
+                    else:
+                        messagebox.showinfo("Out of Stock", "Please lower the quantity!")
+                else:
+                    messagebox.showerror("Error", f"Product '{product_name}' not found in database.")
+
+            # Insert all accumulated text into textArea
+            textArea.config(state="normal")
+            textArea.insert(tk.END, text_area_content)
+            textArea.config(state="disabled")
+
+            # Update totalCostBox with cumulative total
+            current_total = cumulative_total if totalCostBox.get() == "" else float(totalCostBox.get()) + cumulative_total
             totalCostBox.config(state="normal")
+            totalCostBox.delete(0, tk.END)
+            totalCostBox.insert(0, f"{current_total:.1f}")
+            totalCostBox.config(state="disabled")
+
+            conn.commit()
+            conn.close()
+
             # Clear the quantity box for new input
             quantityBox.delete(0, tk.END)
 
-            # Update the totalCostBox with the new cumulative total
-            current_total = totalCostBox.get()
-            if current_total:
-                cumulative_total += float(current_total)
-            
-            totalCostBox.delete(0, tk.END)
-            totalCostBox.insert(0, str(f"{cumulative_total:.1f}"))
-
-    # Remove selection after adding to the textArea
-            for item in selected_items:
-                productList.selection_remove(item)
-
             # Disable textArea to prevent user editing
-            LoadProducts()
-            textArea.config(state="disabled") 
-            totalCostBox.config(state="disabled")
-    
+            textArea.config(state="disabled")
         def finalBill():
             textArea.config(state="normal") 
             textArea.insert(END,'-------------------------------------------------')

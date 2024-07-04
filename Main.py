@@ -243,27 +243,77 @@ class IMS:
 
 
         def displayBill():
+            n = cusNamebox.get()
+            p = phoneNumBox.get()
+            cusNamebox.config(state="disabled")
+            phoneNumBox.config(state="disabled")
             textArea.config(state="normal")   
             textArea.delete(1.0,END)
-            textArea.insert(END,'\t\t  SciPy\n\n')
             # textArea.insert(END,'\n**************************************************') 
             textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
             textArea.insert(END,'CUSTOMER DETAILS\n')
             # textArea
             textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,'NAME : ATHARVA RAVI DATE\n')
-            textArea.insert(END,'PHONE NO. : 7276250789\n')
+            textArea.insert(END,f'NAME :  {n}\n')
+            textArea.insert(END,f'PHONE NO. :  {p}\n')
             textArea.insert(END,'-------------------------------------------------') 
-            
-            
+            textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
+            textArea.insert(END,'-------------------------------------------------') 
+            textArea.config(state="disabled")
 
 
+        def addItem():
+            selected_items = productList.selection()
+            if not selected_items:
+                messagebox.showwarning("Warning", "Please select a product to add.")
+                return
 
-
-
-
-            textArea.config(state="disabled")   
+            try:
+                quantity = int(quantityBox.get())
+            except ValueError:
+                messagebox.showerror("Error", "Please enter a valid quantity.")
+                return
     
+            # Enable textArea to insert text
+            textArea.config(state="normal")
+
+            cumulative_total = 0
+
+            for item in selected_items:
+                item_data = productList.item(item, 'values')
+                product_name, product_price = item_data[0], float(item_data[1])
+                total_price = product_price * quantity
+
+                textArea.insert(tk.END, f"{product_name}\t                  {quantity:.1f}\t      {product_price:.1f}\t      {total_price:.1f}\n")
+                
+                cumulative_total += total_price
+            totalCostBox.config(state="normal")
+            # Clear the quantity box for new input
+            quantityBox.delete(0, tk.END)
+
+            # Update the totalCostBox with the new cumulative total
+            current_total = totalCostBox.get()
+            if current_total:
+                cumulative_total += float(current_total)
+            
+            totalCostBox.delete(0, tk.END)
+            totalCostBox.insert(0, str(f"{cumulative_total:.1f}"))
+
+    # Remove selection after adding to the textArea
+            for item in selected_items:
+                productList.selection_remove(item)
+
+            # Disable textArea to prevent user editing
+            LoadProducts()
+            textArea.config(state="disabled") 
+            totalCostBox.config(state="disabled")
+    
+        def finalBill():
+            textArea.config(state="normal") 
+            textArea.insert(END,'-------------------------------------------------')
+            textArea.insert(END,f'           TOTAL    : \t\t{totalCostBox.get()}') 
+            
+
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -366,7 +416,28 @@ class IMS:
         l1.pack(side=tk.TOP, fill=tk.X)
 
         dedicateFrame = tk.Frame(pSelectFrame, width=380, height=500)
-        dedicateFrame.place(x=25, y=100)
+        dedicateFrame.place(x=50, y=100)
+
+        customerDetails = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
+        customerDetails.place(x=5,y=355,width=430,height=256)
+
+
+        detail = Label(customerDetails,text="DETAILS", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
+        detail.pack(side=tk.TOP, fill=tk.X)
+
+        cusName = Label(customerDetails,text="Name :",font=("Arial",12,"bold"),bg="white")
+        cusName.place(x=40,y=80)
+
+        cusNamebox = tk.Entry(customerDetails,width=20,bd=1,validate=None,justify="center",relief=SOLID,font=("Arial",12),bg="white")
+        cusNamebox.place(x=190,y=81,height=30)
+
+        phoneNum = Label(customerDetails,text="Phone no. :",font=("Arial",12,"bold"),bg="white")
+        phoneNum.place(x=40,y=140)
+
+        phoneNumBox = tk.Entry(customerDetails,width=20,bd=1,validate=None,justify="center",relief=SOLID,font=("Arial",12),bg="white")
+        phoneNumBox.place(x=190,y=140,height=30)
+
+
 
         # Create a Treeview widget
         columns = ('product', 'price')
@@ -389,6 +460,20 @@ class IMS:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         populateListBox(productList)
+        def LoadProducts():
+            for item in productList.get_children():
+                productList.delete(item)
+            
+            conn = sql.connect('ProductList.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT pro_name, price FROM productlist")
+            rows = cursor.fetchall()
+            
+            for data in rows:
+                productList.insert('', tk.END, values=data)
+
+            conn.close()
+
         #=============calculator==========
 
         calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
@@ -418,14 +503,14 @@ class IMS:
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=75)
+        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=addItem,bg="#62B6CB",fg="white").place(x=30,y=75)
 
-        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill).place(x=150,y=75)
+        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill,bg="#62B6CB",fg="white").place(x=150,y=75)
 
         totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
         totalLabel.place(x=30,y=150)
 
-        totalCostBox = tk.Entry(moneyFrame,width=13,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
+        totalCostBox = tk.Entry(moneyFrame,width=13,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white",state="disabled")
         totalCostBox.place(x=120,y=150,height=32)
 
         quantityLabel = Label(moneyFrame,text="Quantity : ",font=("Calibri",12,"bold"),bg="white")
@@ -435,9 +520,9 @@ class IMS:
         quantityBox.place(x=120,y=200,height=35)
 
 
-        TotalBtn = Button(moneyFrame,text="Total",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=30,y=250)
+        TotalBtn = Button(moneyFrame,text="Total",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white",command=finalBill).place(x=30,y=250)
 
-        printBtn = Button(moneyFrame,text="Print",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED).place(x=150,y=250)
+        printBtn = Button(moneyFrame,text="Print",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white").place(x=150,y=250)
 
 
         #==================================Bill============================================

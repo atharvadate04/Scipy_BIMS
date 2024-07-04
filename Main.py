@@ -77,6 +77,10 @@ class IMS:
             else:
                 show_login_window() 
 
+        def clear_field(field):
+            field.config(state="normal") 
+            field.delete(0, tk.END)
+
         def addProduct(event=None):
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
@@ -94,7 +98,10 @@ class IMS:
                             (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
-            
+                clear_field(nameBox)
+                clear_field(idBox)
+                clear_field(priceBox)
+                clear_field(quantityBox)
             conn.close()
 
         def updateProduct(event=None):
@@ -121,16 +128,18 @@ class IMS:
             else:
                 messagebox.showinfo("Error", "Product ID not found. Please add the product first.")
 
-            # fetchProducts()    
+            clear_field(nameBox)
+            clear_field(idBox)
+            clear_field(priceBox)
+            clear_field(quantityBox)   
             conn.close()
 
         def deleteproduct(event=None):
             conn = sql.connect("ProductList.db")
-            cursor = conn.cursor() 
-
-
+            cursor = conn.cursor()
             cursor.execute("DELETE FROM productlist WHERE  id = ?", ( idBox.get(),))
-            conn.commit() 
+            conn.commit()
+            clear_field(idBox)
             conn.close()           
 
 

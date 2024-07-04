@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
-from tkinter import simpledialog, messagebox
+from tkinter import messagebox
 
 
 class IMS:
@@ -17,6 +17,8 @@ class IMS:
         self.titleIcon = PhotoImage(file="SciPy.png")
 
         self.logged_in = False  # Track if user is logged in
+
+#=================================Login window function==================================
 
         def show_login_window():
             login_window = Toplevel(self.main_window)
@@ -68,9 +70,8 @@ class IMS:
             login_window.grab_set()
             self.main_window.wait_window(login_window)
 
+#=================================Update function==================================
 
-
-        # Function to show admin frame if logged in
         def show_frame1():
             if self.logged_in:
                 adminFrame.tkraise()
@@ -80,6 +81,9 @@ class IMS:
         def clear_field(field):
             field.config(state="normal") 
             field.delete(0, tk.END)
+
+#=================================ADD function==================================
+
 
         def addProduct(event=None):
             conn = sql.connect("ProductList.db")
@@ -95,26 +99,27 @@ class IMS:
                 messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
             else:
                 cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
-                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
+                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
                 clear_field(nameBox)
                 clear_field(idBox)
                 clear_field(priceBox)
-                clear_field(quantityBox)
+                clear_field(quantityBox1)
             conn.close()
+            nameBox.focus()
+
+#=================================Update function==================================
 
         def updateProduct(event=None):
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             
             cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
-            #=============UPDATE QUANTITY BY ADDITION========
             product_id = int(idBox.get())
-            product_quantity = int(quantityBox.get())
+            product_quantity = int(quantityBox1.get())
             cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
             result = cursor.fetchone()
-            #===========================================
             cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
             existing_product = cursor.fetchone()
 
@@ -131,8 +136,11 @@ class IMS:
             clear_field(nameBox)
             clear_field(idBox)
             clear_field(priceBox)
-            clear_field(quantityBox)   
+            clear_field(quantityBox1)   
             conn.close()
+            nameBox.focus()
+
+#=================================Delete function==================================
 
         def deleteproduct(event=None):
             conn = sql.connect("ProductList.db")
@@ -141,7 +149,7 @@ class IMS:
             conn.commit()
             clear_field(idBox)
             conn.close()           
-
+            nameBox.focus()
 
         def show_frame2():
             dashBoardFrame.tkraise()     
@@ -157,27 +165,6 @@ class IMS:
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
 
-
-
-        # def fetchProducts():
-        #     conn = sql.connect("ProductList.db")
-        #     cursor = conn.cursor()
-            
-        #     cursor.execute("SELECT pro_name, id, price, quantity FROM productlist")
-        #     rows = cursor.fetchall()
-            
-        #     productList.delete(0, END)  # Clear the listbox
-            
-        #     for row in rows:
-        #         productList.insert(END, f"Name: {row[0]}")
-            
-        #     conn.close()
-        
-                
-
-            
-
-    
 
         #=====================================TITILE==================================
 
@@ -244,8 +231,8 @@ class IMS:
 
         prdQuantity = Label(productPanel, text="Quantity :", font=("Arial", 11, "bold"))
         prdQuantity.place(x=20, y=260)
-        quantityBox = tk.Entry(productPanel, width=25, bd=1, validate=None, relief=SOLID, font=("Arial", 12))
-        quantityBox.place(x=120, y=260, height=25)
+        quantityBox1 = tk.Entry(productPanel, width=25, bd=1, validate=None, relief=SOLID, font=("Arial", 12))
+        quantityBox1.place(x=120, y=260, height=25)
 
         addBtn = Button(productPanel, text="ADD", width=8, height=2, relief=RAISED, bg="#1B4965", fg="white", font=("Arial", 11, "bold"), command=addProduct)
         addBtn.place(x=30, y=420)
@@ -258,12 +245,6 @@ class IMS:
         productTable.place(x=409, y=5, width=737, height=607)
 
         prdTableTitle = Label(productTable, text="-------- Products Table --------", font=("Arial", 15, "bold"), pady=7).pack()
-        
-        #==================Sql PANEL ===========================================
-
-
-
-
 
         #==================DASH BOARD PANEL ===========================================
 

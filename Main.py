@@ -6,7 +6,6 @@ from tkinter.messagebox import askyesno
 import sqlite3 as sql
 from tkinter import messagebox
 
-
 class IMS:
     def __init__(self, main_window):
         self.main_window = main_window
@@ -84,7 +83,6 @@ class IMS:
 
 #=================================ADD function==================================
 
-
         def addProduct(event=None):
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
@@ -103,10 +101,7 @@ class IMS:
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
 
-                
                 populateListBox(productList)    
-
-
                 clear_field(nameBox)
                 clear_field(idBox)
                 clear_field(priceBox)
@@ -160,7 +155,6 @@ class IMS:
         def show_frame2():
             dashBoardFrame.tkraise()     
 
-
         #********************************CALCULATOR FUNCTION*************************
         def change(event=None):  # Added default event parameter
                 a = int(totalCost1.get())
@@ -189,7 +183,6 @@ class IMS:
         
         #====================================Left-Menu================================
 
-
         mainLeftMenuO = Frame(self.main_window,bd=2,relief=RIDGE,bg="#5FA8D3")
         mainLeftMenuO.place(x=5,y=75,width=200,height=620)
 
@@ -205,7 +198,6 @@ class IMS:
 
         adminBtn = Button(mainLeftMenuI,text="Admin Panel",font=("Monospace",15,"bold"),bg="#5FA8D3",fg="#1B4965",cursor="hand2",bd=3,relief=RAISED,command=show_frame1).pack(side=TOP,fill=X)
 
-
         #==========================creation of Admin Frame =============================
 
         adminFrame = Frame(main_window,bd=2,relief=RIDGE)
@@ -215,7 +207,6 @@ class IMS:
         spacer.pack(side=TOP,fill=X)
 
         dashBoardBtn = Button(mainLeftMenuI,text="DashBoard",font=("Monospace",15,"bold"),bg="#5FA8D3",fg="#1B4965",cursor="hand2",bd=3,relief=RAISED,command=show_frame2).pack(side=TOP,fill=X)
-
 
         #=====================creation of DashBoard Frame ================================
 
@@ -264,7 +255,6 @@ class IMS:
         prdTableTitle = Label(productTable, text="-------- Products Table --------", font=("Arial", 15, "bold"), pady=7).pack()
 
         #==================DASH BOARD PANEL ===========================================
-
         #==========product================
         pSelectFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         pSelectFrame.place(x=5,y=5,width=430,height=607)
@@ -278,20 +268,13 @@ class IMS:
 
         productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER,relief=SOLID)
 
-        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white")
-
-
-        for data in range(60):
-            productList.insert(END,"DATA NUMBER : "+str(data+1))
+        populateListBox(productList)
 
         productList.pack(side=RIGHT,fill=BOTH,padx=1)
         scrollbar.config( command = productList.yview )
 
-
-
-
-
         #=============calculator==========
+
         calciFrame = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
         calciFrame.place(x=440,y=5,width=290,height=290)
 

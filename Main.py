@@ -94,7 +94,9 @@ class IMS:
                             (nameBox.get(), idBox.get(), priceBox.get(), quantityBox.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product added successfully.")
-            populateListBox(productList)
+                
+                populateListBox(productList)    
+
             conn.close()
 
         def updateProduct(event=None):
@@ -151,6 +153,7 @@ class IMS:
 
 
         def populateListBox(productList):
+            productList.delete(0,tk.END)
             conn = sql.connect('ProductList.db')
             cursor = conn.cursor()
             cursor.execute("SELECT pro_name FROM productlist")
@@ -162,6 +165,7 @@ class IMS:
             conn.close()    
         
                 
+    #       
 
             
 
@@ -265,7 +269,7 @@ class IMS:
 
         scrollbar = Scrollbar(dedicateFrame,width=23)
         scrollbar.pack( side = RIGHT, fill=Y )
-        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER)
+        productList = Listbox(dedicateFrame,bd=1,yscrollcommand = scrollbar.set,font=("Calibri",14),width=25,height=19,bg="white",justify=CENTER,relief=SOLID)
 
 
         populateListBox(productList)
@@ -334,6 +338,10 @@ class IMS:
         innerBillFrame.place(x=3,y=2,width=404,height=553)
 
         billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",15,"bold"),bg="#5FA8D3",fg="#CAE9FF").pack(side=TOP,fill=X)
+
+        
+
+
 
 
 main_window = Tk()

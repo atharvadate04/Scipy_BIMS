@@ -4,17 +4,78 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
-from tkinter import messagebox
+from tkinter import simpledialog, messagebox
 
 
 class IMS:
-    def __init__(self,main_window):
+    def __init__(self, main_window):
         self.main_window = main_window
         self.main_window.geometry("1380x700+0+0")
         self.main_window.title("Scipy Bills and Inventory Management")
         self.main_window.iconbitmap("Dmart .ico")
         self.main_window.configure(bg="#BEE9E8")
         self.titleIcon = PhotoImage(file="SciPy.png")
+
+        self.logged_in = False  # Track if user is logged in
+
+        def show_login_window():
+            login_window = Toplevel(self.main_window)
+            login_window.title("Login")
+            login_window.geometry("300x250+500+200")
+            login_window.resizable(False, False)
+
+            # window styling
+            login_window.configure(bg="#CAE9FF")
+            Label(login_window, text="Please Login to Access Admin Panel", font=("Arial", 12, "bold"), bg="#CAE9FF").pack(pady=10)
+
+            #Username ntry
+            username_label = Label(login_window, text="Username", bg="#CAE9FF", font=("Arial", 12))
+            username_label.pack()
+            username_entry = Entry(login_window, font=("Arial", 12), width=20, bd=1)
+            username_entry.pack(pady=5)
+            username_entry.focus()
+
+            #Passwordentry
+            password_label = Label(login_window, text="Password", bg="#CAE9FF", font=("Arial", 12))
+            password_label.pack()
+            password_entry = Entry(login_window, font=("Arial", 12), width=20, bd=1, show='*')
+            password_entry.pack(pady=5)
+
+            # Login button function
+            def login(event=NONE):
+                valid_username = "admin"
+                valid_password = "12345"
+
+                username = username_entry.get()
+                password = password_entry.get()
+
+                if username == valid_username and password == valid_password:
+                    self.logged_in = True
+                    login_window.destroy()
+                    show_frame1()
+                else:
+                    messagebox.showerror("Login Failed", "Invalid username or password")
+                    username_entry.delete(0, END)
+                    password_entry.delete(0, END)
+
+            login_window.bind('<Return>', login)
+
+            # Login button
+            login_btn = Button(login_window, text="Login", font=("Arial", 12, "bold"), bg="#1B4965", fg="white", relief=RAISED, command=login)
+            login_btn.pack(pady=10)
+
+            login_window.transient(self.main_window)
+            login_window.grab_set()
+            self.main_window.wait_window(login_window)
+
+
+
+        # Function to show admin frame if logged in
+        def show_frame1():
+            if self.logged_in:
+                adminFrame.tkraise()
+            else:
+                show_login_window() 
 
         def addProduct(event=None):
             conn = sql.connect("ProductList.db")
@@ -70,8 +131,6 @@ class IMS:
             conn.commit() 
             conn.close()           
 
-        def show_frame1():
-            adminFrame.tkraise() 
 
         def show_frame2():
             dashBoardFrame.tkraise()     

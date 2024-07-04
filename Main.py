@@ -6,7 +6,6 @@ from tkinter.messagebox import askyesno
 import sqlite3 as sql
 from tkinter import messagebox
 
-
 class IMS:
     def __init__(self, main_window):
         self.main_window = main_window
@@ -228,6 +227,8 @@ class IMS:
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
 
+        #********************************Dashboard Listbox FUNCTION*************************
+
         def populateListBox(productList):
             for item in productList.get_children():
                 productList.delete(item)
@@ -415,6 +416,7 @@ class IMS:
         l1 = tk.Label(pSelectFrame, text="PRODUCT LIST", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
         l1.pack(side=tk.TOP, fill=tk.X)
 
+
         dedicateFrame = tk.Frame(pSelectFrame, width=380, height=500)
         dedicateFrame.place(x=50, y=100)
 
@@ -532,7 +534,7 @@ class IMS:
         innerBillFrame = Frame(billFrame,bd=3,relief=RIDGE)
         innerBillFrame.place(x=3,y=2,width=404,height=553)
 
-        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=3,font=("Arial",15,"bold"),bg="#5FA8D3",fg="#CAE9FF").pack(side=TOP,fill=X)
+        billHead = Label(innerBillFrame,text="BILL",bd=3,relief=RAISED,height=2,font=("Arial",15,"bold"),bg="#5FA8D3",fg="#CAE9FF").pack(side=TOP,fill=X)
 
         billBoardArea = Frame(innerBillFrame,bd=2,relief=GROOVE,width=400,height=545)
         billBoardArea.pack()
@@ -545,9 +547,40 @@ class IMS:
         textArea.pack(fill=BOTH)
         scrol.config(command=textArea.yview)
 
-        
+        #==================================Buyer Details============================================
 
+        # Frame for Customer Details
+        customer_frame = Frame(dashBoardFrame, bd=3, relief=RIDGE)
+        customer_frame.place(x=5, y=355, width=430, height=260)  # Adjusted x, y, width, and height
 
+        inner_customer_frame = Frame(customer_frame, bd=3, relief=RIDGE)
+        inner_customer_frame.place(x=0, y=0, width=424, height=256)
+
+        customer_head = Label(inner_customer_frame, text="CUSTOMER DETAILS", bd=3, relief=RAISED, height=2, font=("Arial", 15, "bold"), bg="#5FA8D3", fg="#CAE9FF")
+        customer_head.pack(side=TOP, fill=X)
+
+        details_frame = Frame(inner_customer_frame, bd=2, relief=GROOVE)
+        details_frame.pack(fill=BOTH, expand=True)
+
+        # Labels and Entry fields for Name, Phone Number, and Address
+        name_label = Label(details_frame, text="Name:", font=("Arial", 12, "bold"))
+        name_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        name_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        name_entry.grid(row=0, column=1, padx=5, pady=10, sticky="w")
+        name_entry.focus()
+
+        phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
+        phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w")
+
+        address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
+        address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w")
+
+        submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)
+        submit_button.place(x=180, y= 135)
 
 
 main_window = Tk()

@@ -84,31 +84,34 @@ class IMS:
 #=================================ADD function==================================
 
         def addProduct(event=None):
-            conn = sql.connect("ProductList.db")
-            cursor = conn.cursor()
-            
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+            if (nameBox.get() and idBox.get() and priceBox.get() and quantityBox1.get()):
+                conn = sql.connect("ProductList.db")
+                cursor = conn.cursor()
+                
+                cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
 
-            # Check if the product ID already exists
-            cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
-            existing_product = cursor.fetchone()
+                # Check if the product ID already exists
+                cursor.execute("SELECT * FROM productlist WHERE id = ?", (idBox.get(),))
+                existing_product = cursor.fetchone()
 
-            if existing_product:
-                messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
+                if existing_product:
+                    messagebox.showinfo("Update Required", "Product ID already exists. Please update the product instead of adding a new one.")
+                else:
+                    cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
+                                (nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get()))
+                    conn.commit()
+                    messagebox.showinfo("Success", "Product added successfully.")
+
+                    populateListBox(productList)    
+                    clear_field(nameBox)
+                    clear_field(idBox)
+                    clear_field(priceBox)
+                    clear_field(quantityBox1)
             else:
-                cursor.execute("INSERT INTO productlist (pro_name, id, price, quantity) VALUES (?, ?, ?, ?)",
-                            (nameBox.get(), idBox.get(), priceBox.get(), quantityBox1.get()))
-                conn.commit()
-                messagebox.showinfo("Success", "Product added successfully.")
-
-                populateListBox(productList)    
-                clear_field(nameBox)
-                clear_field(idBox)
-                clear_field(priceBox)
-                clear_field(quantityBox1)
-
+                messagebox.showinfo("Warning","All Fields are Neccesary")
             conn.close()
             nameBox.focus()
+            loadProducts()
 
 #=================================Update function==================================
 
@@ -116,8 +119,12 @@ class IMS:
             conn = sql.connect("ProductList.db")
             cursor = conn.cursor()
             
-            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
             product_id = int(idBox.get())
+            cursor.execute("CREATE TABLE IF NOT EXISTS productlist (pro_name TEXT, id INTEGER PRIMARY KEY, price REAL, quantity INTEGER)")
+            cursor.execute("SELECT * FROM productlist WHERE id=?", (product_id,))
+            result1 = cursor.fetchone()
+            pro_name= result1[1]
+            pro_price = result1[2]
             product_quantity = int(quantityBox1.get())
             cursor.execute("SELECT quantity FROM productlist WHERE id=?", (product_id,))
             result = cursor.fetchone()
@@ -128,7 +135,7 @@ class IMS:
                 current_quantity = result[0]
                 new_quantity = current_quantity + product_quantity
                 cursor.execute("UPDATE productlist SET pro_name = ?, price = ?, quantity = ? WHERE id = ?",
-                            (nameBox.get(), priceBox.get(), new_quantity, idBox.get()))
+                            (pro_name, pro_price, new_quantity, idBox.get()))
                 conn.commit()
                 messagebox.showinfo("Success", "Product updated successfully.")
             else:
@@ -140,6 +147,7 @@ class IMS:
             clear_field(quantityBox1)   
             conn.close()
             nameBox.focus()
+            loadProducts()
 
 #=================================Delete function==================================
 
@@ -158,6 +166,7 @@ class IMS:
                     clear_field(idBox)
                     conn.close()
                     idBox.focus()
+                    loadProducts()
             else:
                 messagebox.showinfo("Error", f"Product with ID {productid} not found.")
 
@@ -165,6 +174,18 @@ class IMS:
 
         def show_frame2():
             dashBoardFrame.tkraise()     
+
+#================================= Load products Function===============================
+        def loadProducts():
+            for item in tree.get_children():
+                tree.delete(item)
+            conn = sql.connect("ProductList.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM productlist")
+            rows = cursor.fetchall()
+            for row in rows:
+                tree.insert('', tk.END, values=row)
+            conn.close()
 
         #********************************CALCULATOR FUNCTION*************************
         def change(event=None):  # Added default event parameter
@@ -263,7 +284,20 @@ class IMS:
         productTable = Frame(adminFrame, bd=3, relief=RIDGE)
         productTable.place(x=409, y=5, width=737, height=607)
 
+    #=================================Admin panel display=============================
+
         prdTableTitle = Label(productTable, text="-------- Products Table --------", font=("Arial", 15, "bold"), pady=7).pack()
+
+        columns = ('id', 'pro_name', 'price', 'quantity')
+        tree = ttk.Treeview(productTable, columns=columns, show='headings')
+        tree.heading('id', text='ID')
+        tree.heading('pro_name', text='Name')
+        tree.heading('price', text='Price')
+        tree.heading('quantity', text='Quantity')
+
+        tree.pack(fill=tk.BOTH, expand=True)
+
+        loadProducts()
 
         #==================DASH BOARD PANEL ===========================================
         #==========product================

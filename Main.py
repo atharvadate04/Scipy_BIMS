@@ -361,9 +361,12 @@ class IMS:
             calcDisc=NetBill-(NetBill*discount)
             textArea.config(state="normal") 
             textArea.insert(END,'-------------------------------------------------\n')
-            textArea.insert(END,f'                                      TOTAL    : \t\t{NetBill}\n\n')
-            textArea.insert(END,f'Congrats! You got a Discount of {discount*100}%\n') 
-            textArea.insert(END,f'Final Amount to be Paid: {calcDisc}\n')
+            textArea.insert(END,f'                                      Total    :  \t\t ₹ {NetBill}\n')
+            textArea.insert(END,f'                                      Discount : \t\t{discount*100:.0f}%\n')
+            textArea.insert(END,'-------------------------------------------------\n')
+            textArea.insert(END,f'    GRAND TOTAL      :        ₹ {calcDisc}\n')
+            textArea.insert(END,'-------------------------------------------------\n')
+
             
     #********************************Print bill FUNCTION*************************
         def printBill():
@@ -508,6 +511,10 @@ class IMS:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         populateListBox(productList)
+
+        def on_product_select(event):
+            quantityBox.focus()
+        productList.bind('<ButtonRelease-1>', on_product_select)
 
         #=============Load product function==========
 

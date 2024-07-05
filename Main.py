@@ -243,25 +243,45 @@ class IMS:
             conn.close()
 
 
-        def displayBill():
-            n = cusNamebox.get()
-            p = phoneNumBox.get()
-            cusNamebox.config(state="disabled")
-            phoneNumBox.config(state="disabled")
-            textArea.config(state="normal")   
-            textArea.delete(1.0,END)
-            # textArea.insert(END,'\n**************************************************') 
-            textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
-            textArea.insert(END,'CUSTOMER DETAILS\n')
-            # textArea
-            textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,f'NAME :  {n}\n')
-            textArea.insert(END,f'PHONE NO. :  {p}\n')
-            textArea.insert(END,'-------------------------------------------------') 
-            textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
-            textArea.insert(END,'-------------------------------------------------') 
-            textArea.config(state="disabled")
+        def submit_customer_details():
+            if name_entry.get() and phone_entry.get() and address_entry.get():
+                name = name_entry.get()
+                phone = phone_entry.get()
+                address = address_entry.get()
+                name_entry.config(state='disabled')
+                phone_entry.config(state='disabled')
+                address_entry.config(state='disabled')
+                textArea.config(state="normal")   
+                textArea.delete(1.0,END)
+                message = f"Name: {name}\n Phone: {phone} \n Address: {address}\n"
+                textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
+                textArea.insert(END,'CUSTOMER DETAILS\n')
+                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END, message)
+                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
+                textArea.insert(END,'-------------------------------------------------') 
+                textArea.config(state="disabled")   
+            else:
+                messagebox.showinfo("Warning", "Please Enter All Details!")
 
+#=====================================Reset Function==================================
+
+        def resetDash():
+            choice=messagebox.askyesno("Warning", "Are you sure you want to reset the page\nYou will lose your progress.")
+            if choice:
+                name_entry.config(state='normal')
+                phone_entry.config(state='normal')
+                address_entry.config(state='normal')
+                name_entry.delete(0,tk.END)
+                phone_entry.delete(0,tk.END)
+                address_entry.delete(0,tk.END)
+                name_entry.focus()
+                textArea.config(state="normal")  
+                textArea.delete(1.0,END)
+                textArea.config(state="disabled")
+
+#=====================================Reset Function==================================
 
         def addItem():
             selected_items = productList.selection()
@@ -429,30 +449,8 @@ class IMS:
         l1 = tk.Label(pSelectFrame, text="PRODUCT LIST", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
         l1.pack(side=tk.TOP, fill=tk.X)
 
-
-        dedicateFrame = tk.Frame(pSelectFrame, width=380, height=500)
-        dedicateFrame.place(x=50, y=100)
-
-        customerDetails = Frame(dashBoardFrame,bd=3,relief=RIDGE,bg="white")
-        customerDetails.place(x=5,y=355,width=430,height=256)
-
-
-        detail = Label(customerDetails,text="DETAILS", bg="#5FA8D3", fg="#CAE9FF", font=("Arial", 16, "bold"), height=2, relief=tk.RAISED)
-        detail.pack(side=tk.TOP, fill=tk.X)
-
-        cusName = Label(customerDetails,text="Name :",font=("Arial",12,"bold"),bg="white")
-        cusName.place(x=40,y=80)
-
-        cusNamebox = tk.Entry(customerDetails,width=20,bd=1,validate=None,justify="center",relief=SOLID,font=("Arial",12),bg="white")
-        cusNamebox.place(x=190,y=81,height=30)
-
-        phoneNum = Label(customerDetails,text="Phone no. :",font=("Arial",12,"bold"),bg="white")
-        phoneNum.place(x=40,y=140)
-
-        phoneNumBox = tk.Entry(customerDetails,width=20,bd=1,validate=None,justify="center",relief=SOLID,font=("Arial",12),bg="white")
-        phoneNumBox.place(x=190,y=140,height=30)
-
-
+        dedicateFrame = tk.Frame(pSelectFrame, width=410, height=500)
+        dedicateFrame.place(x=10, y=60, width=410, height=278)
 
         # Create a Treeview widget
         columns = ('product', 'price')
@@ -475,6 +473,9 @@ class IMS:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         populateListBox(productList)
+
+        #=============Load product function==========
+
         def LoadProducts():
             for item in productList.get_children():
                 productList.delete(item)
@@ -520,7 +521,8 @@ class IMS:
 
         adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=addItem,bg="#62B6CB",fg="white").place(x=30,y=75)
 
-        biLLBtn = Button(moneyFrame,text="Bill",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=displayBill,bg="#62B6CB",fg="white").place(x=150,y=75)
+        resetBtn = Button(moneyFrame,text="Reset",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=resetDash)
+        resetBtn.place(x=150,y=75)
 
         totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
         totalLabel.place(x=30,y=150)
@@ -560,7 +562,40 @@ class IMS:
         textArea.pack(fill=BOTH)
         scrol.config(command=textArea.yview)
 
-        
+#==================================Buyer Details============================================
+
+        # Frame for Customer Details
+        customer_frame = Frame(dashBoardFrame, bd=3, relief=RIDGE)
+        customer_frame.place(x=5, y=355, width=430, height=260)  # Adjusted x, y, width, and height
+
+        inner_customer_frame = Frame(customer_frame, bd=3, relief=RIDGE)
+        inner_customer_frame.place(x=0, y=0, width=424, height=256)
+
+        customer_head = Label(inner_customer_frame, text="CUSTOMER DETAILS", bd=3, relief=RAISED, height=2, font=("Arial", 15, "bold"), bg="#5FA8D3", fg="#CAE9FF")
+        customer_head.pack(side=TOP, fill=X)
+
+        details_frame = Frame(inner_customer_frame, bd=2, relief=GROOVE)
+        details_frame.pack(fill=BOTH, expand=True)
+
+        # Labels and Entry fields for Name, Phone Number, and Address
+        name_label = Label(details_frame, text="Name:", font=("Arial", 12, "bold"))
+        name_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        name_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        name_entry.grid(row=0, column=1, padx=5, pady=10, sticky="w")
+        name_entry.focus()
+
+        phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
+        phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w")
+
+        address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
+        address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w")
+
+        submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)
+        submit_button.place(x=180, y= 135)
 
 
 main_window = Tk()

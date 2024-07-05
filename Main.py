@@ -206,7 +206,7 @@ class IMS:
             dashBoardFrame.tkraise()     
 
 #================================= Load products Function===============================
-        def loadProducts():
+        def loadProducts(): #Function for refreshing the product list in Admin
             for item in tree.get_children():
                 tree.delete(item)
             conn = sql.connect("ProductList.db")
@@ -219,17 +219,19 @@ class IMS:
 
         #********************************CALCULATOR FUNCTION*************************
         def change(event=None):  # Added default event parameter
-                a = int(totalCost1.get())
-                b = int(cashBox.get())  # Get value from totalCost Entry widget
+                a = float(totalCost1.get())
+                b = float(cashBox.get())  # Get value from totalCost Entry widget
                 c = b-a
                 changeText.config(state="normal") 
                 changeText.delete(0, tk.END)
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
+                textArea.insert(END,f'Paid : {b}        Balance : {c}')
+                textArea.insert("\n\n         *****HAVE A NICE DAY*****")
 
         #********************************Dashboard Listbox FUNCTION*************************
 
-        def populateListBox(productList):
+        def populateListBox(productList):#Function for refreshing the product list
             for item in productList.get_children():
                 productList.delete(item)
             conn = sql.connect('ProductList.db')
@@ -284,7 +286,7 @@ class IMS:
 
 #=====================================Add Function==================================
 
-        def addItem():
+        def addItem():#Function for Add button
             selected_items = productList.selection()
             if not selected_items:
                 messagebox.showwarning("Warning", "Please select a product to add.")
@@ -348,6 +350,9 @@ class IMS:
             textArea.config(state="disabled")
             
             loadProducts()
+    
+    #=========================================Total Button Function===========================
+
         def finalBill():
             NetBill=float(totalCostBox.get())
             if NetBill<1000:
@@ -366,8 +371,11 @@ class IMS:
             textArea.insert(END,'-------------------------------------------------\n')
             textArea.insert(END,f'    GRAND TOTAL      :        ₹ {calcDisc}\n')
             textArea.insert(END,'-------------------------------------------------\n')
+            totalCost1.config(state="normal")
+            totalCost1.insert(0,calcDisc)
+            totalCost1.config(state="readonly")
 
-            
+
     #********************************Print bill FUNCTION*************************
         def printBill():
         # Get the content of the textarea
@@ -546,7 +554,7 @@ class IMS:
 
         totalCost = Label(calciFrame,text="Total Cost",font=("Arial",10,"bold"),bg="white").place(x=5,y=141)
         rupeesTotal = Label(calciFrame,text="₹",font=("Arial",15,"bold"),bg="white").place(x=15,y=169)
-        totalCost1 = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
+        totalCost1 = tk.Entry(calciFrame,width=17,bd=1,relief=SOLID,justify="center",state="readonly",font=("Arial",12),bg="white")
         totalCost1.place(x=46,y=171,height=30)
 
 

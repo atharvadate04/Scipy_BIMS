@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import askyesno 
 import sqlite3 as sql
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 
 class IMS:
     def __init__(self, main_window):
@@ -242,6 +242,7 @@ class IMS:
 
             conn.close()
 
+    #********************************Customer details FUNCTION*************************
 
         def submit_customer_details():
             if name_entry.get() and phone_entry.get() and address_entry.get():
@@ -256,11 +257,11 @@ class IMS:
                 message = f"Name: {name}\n Phone: {phone} \n Address: {address}\n"
                 textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
                 textArea.insert(END,'CUSTOMER DETAILS\n')
-                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END,'-------------------------------------------------\n') 
                 textArea.insert(END, message)
-                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END,'-------------------------------------------------\n') 
                 textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
-                textArea.insert(END,'-------------------------------------------------') 
+                textArea.insert(END,'-------------------------------------------------\n') 
                 textArea.config(state="disabled")   
             else:
                 messagebox.showinfo("Warning", "Please Enter All Details!")
@@ -281,7 +282,7 @@ class IMS:
                 textArea.delete(1.0,END)
                 textArea.config(state="disabled")
 
-#=====================================Reset Function==================================
+#=====================================Add Function==================================
 
         def addItem():
             selected_items = productList.selection()
@@ -342,12 +343,44 @@ class IMS:
 
             # Disable textArea to prevent user editing
             textArea.config(state="disabled")
-        def finalBill():
-            textArea.config(state="normal") 
-            textArea.insert(END,'-------------------------------------------------')
-            textArea.insert(END,f'           TOTAL    : \t\t{totalCostBox.get()}') 
-            
 
+    #********************************Print bill FUNCTION*************************
+
+        def finalBill():
+            NetBill=float(totalCostBox.get())
+            if NetBill<1000:
+                discount=.05
+            elif NetBill>=1000 and NetBill<=3000:
+                discount=.10
+            elif NetBill>3000 and NetBill<=5000:
+                discount=.12
+            else:
+                discount=.15
+            calcDisc=NetBill-(NetBill*discount)
+            textArea.config(state="normal") 
+            textArea.insert(END,'-------------------------------------------------\n')
+            textArea.insert(END,f'                                      TOTAL    : \t\t{NetBill}\n\n')
+            textArea.insert(END,f'Congrats! You got a Discount of {discount*100}%\n') 
+            textArea.insert(END,f'Final Amount to be Paid: {calcDisc}\n')
+            
+    #********************************Print bill FUNCTION*************************
+        def printBill():
+        # Get the content of the textarea
+            bill_content = textArea.get("1.0", tk.END)
+            filename=name_entry.get()+" "+ "Bill"
+            # Ask the user where to save the file
+            file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                    filetypes=[("Text files", "*.txt"),
+                                                                ("All files", "*.*")],
+                                                    title="Save Bill",
+                                                    initialfile=filename)
+            if file_path:
+                # Write the content to the file
+                with open(file_path, 'w') as file:
+                    file.write(bill_content)
+                print("Bill saved successfully at", file_path)
+            else:
+                print("Save operation cancelled")
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -539,7 +572,7 @@ class IMS:
 
         TotalBtn = Button(moneyFrame,text="Total",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white",command=finalBill).place(x=30,y=250)
 
-        printBtn = Button(moneyFrame,text="Print",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white").place(x=150,y=250)
+        printBtn = Button(moneyFrame,text="Print",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white", command = printBill).place(x=150,y=250)
 
 
         #==================================Bill============================================

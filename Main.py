@@ -284,6 +284,17 @@ class IMS:
                 textArea.config(state="normal")  
                 textArea.delete(1.0,END)
                 textArea.config(state="disabled")
+                cashBox.delete(0,tk.END)
+                totalCost1.config(state="normal")
+                totalCost1.delete(0,tk.END)
+                totalCost1.config(state="disabled")
+                changeText.config(state="normal")
+                changeText.delete(0,tk.END)
+                changeText.config(state="disabled")
+                totalCostBox.config(state="normal")
+                totalCostBox.delete(0,tk.END)
+                totalCostBox.config(state="disabled")
+
 
 #=====================================Add Function==================================
 
@@ -637,12 +648,12 @@ class IMS:
 
         phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
         phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white",justify=CENTER)
+        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
         phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
         address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white",justify=CENTER)
+        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
         address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)

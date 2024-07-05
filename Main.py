@@ -266,6 +266,7 @@ class IMS:
                 textArea.insert(END,'Particulars                \t Qty   \t  Rate \t   Amount\n')
                 textArea.insert(END,'-------------------------------------------------\n') 
                 textArea.config(state="disabled")   
+                adD.config(state='normal')
             else:
                 messagebox.showinfo("Warning", "Please Enter All Details!")
 
@@ -277,6 +278,7 @@ class IMS:
                 name_entry.config(state='normal')
                 phone_entry.config(state='normal')
                 address_entry.config(state='normal')
+                adD.config(state="disabled")
                 name_entry.delete(0,tk.END)
                 phone_entry.delete(0,tk.END)
                 address_entry.delete(0,tk.END)
@@ -390,22 +392,24 @@ class IMS:
 
     #********************************Print bill FUNCTION*************************
         def printBill():
-        # Get the content of the textarea
-            bill_content = textArea.get("1.0", tk.END)
-            filename=name_entry.get()+" "+ "Bill"
-            # Ask the user where to save the file
-            file_path = filedialog.asksaveasfilename(defaultextension=".txt",
-                                                    filetypes=[("Text files", "*.txt"),
-                                                                ("All files", "*.*")],
-                                                    title="Save Bill",
-                                                    initialfile=filename)
-            if file_path:
-                # Write the content to the file
-                with open(file_path, 'w') as file:
-                    file.write(bill_content)
-                print("Bill saved successfully at", file_path)
+            if textArea.get("1.0", tk.END).strip() != "":
+                bill_content = textArea.get("1.0", tk.END)
+                filename=name_entry.get()+" "+ "Bill"
+                # Ask the user where to save the file
+                file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                        filetypes=[("Text files", "*.txt"),
+                                                                    ("All files", "*.*")],
+                                                        title="Save Bill",
+                                                        initialfile=filename)
+                if file_path:
+                    # Write the content to the file
+                    with open(file_path, 'w') as file:
+                        file.write(bill_content)
+                    print("Bill saved successfully at", file_path)
+                else:
+                    print("Save operation cancelled")
             else:
-                print("Save operation cancelled")
+                messagebox.showerror("Warning", "Bill Area Empty!")
         #=====================================TITILE==================================
 
         self.mainTitle = Label(self.main_window,text="SciPy Bills and Inventory Management",font=("times new roman",40,"bold"),bg="#1B4965",fg="#CAE9FF",image=self.titleIcon,compound=LEFT,padx=30).place(x=0,y=0,relwidth=1,height=70)
@@ -581,7 +585,8 @@ class IMS:
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=addItem,bg="#62B6CB",fg="white").place(x=30,y=190)
+        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,state="disabled",command=addItem,bg="#62B6CB",fg="white")
+        adD.place(x=30,y=190)
 
         resetBtn = Button(moneyFrame,text="Reset",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=resetDash,bg="#1B4965",fg="white")
         resetBtn.place(x=150,y=190)
@@ -648,12 +653,12 @@ class IMS:
 
         phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
         phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, justify=CENTER, bg="white")
         phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
         address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID,justify=CENTER,bg="white")
         address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)

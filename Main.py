@@ -340,8 +340,12 @@ class IMS:
             # Clear the quantity box for new input
             quantityBox.delete(0, tk.END)
 
+            for item in selected_items:
+                productList.selection_remove(item)
+            
             # Disable textArea to prevent user editing
             textArea.config(state="disabled")
+            
             loadProducts()
         def finalBill():
             textArea.config(state="normal") 
@@ -587,12 +591,12 @@ class IMS:
 
         phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
         phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white",justify=CENTER)
         phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
         address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
+        address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white",justify=CENTER)
         address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)

@@ -222,12 +222,13 @@ class IMS:
                 a = float(totalCost1.get())
                 b = float(cashBox.get())  # Get value from totalCost Entry widget
                 c = b-a
+                c=round(c,2)
                 changeText.config(state="normal") 
                 changeText.delete(0, tk.END)
                 changeText.insert(0, str(c))
                 changeText.config(state="disabled")
                 textArea.insert(END,f'Paid : {b}        Balance : {c}')
-                textArea.insert("\n\n         *****HAVE A NICE DAY*****")
+                textArea.insert(END,"\n\n         *****HAVE A NICE DAY*****")
 
         #********************************Dashboard Listbox FUNCTION*************************
 
@@ -316,7 +317,7 @@ class IMS:
 
                     if quantity <= rem_quant:
                         total_price = product_price * quantity
-                        text_area_content += f"{product_name}\t                     {quantity}\t      {product_price:.1f}\t      {total_price:.1f}\n"
+                        text_area_content += f"{product_name}\t         {quantity}\t      {product_price:.1f}\t      {total_price:.1f}\n"
                         cumulative_total += total_price
 
                         cursor.execute("UPDATE productlist SET quantity=? WHERE pro_name=?", (rem_quant - quantity, product_name))
@@ -366,10 +367,10 @@ class IMS:
             calcDisc=NetBill-(NetBill*discount)
             textArea.config(state="normal") 
             textArea.insert(END,'-------------------------------------------------\n')
-            textArea.insert(END,f'                                      Total    :  \t\t ₹ {NetBill}\n')
+            textArea.insert(END,f'                                      Total    :  \t\t Rs. {NetBill}\n')
             textArea.insert(END,f'                                      Discount : \t\t{discount*100:.0f}%\n')
             textArea.insert(END,'-------------------------------------------------\n')
-            textArea.insert(END,f'    GRAND TOTAL      :        ₹ {calcDisc}\n')
+            textArea.insert(END,f'    GRAND TOTAL      :        Rs. {calcDisc}\n')
             textArea.insert(END,'-------------------------------------------------\n')
             totalCost1.config(state="normal")
             totalCost1.insert(0,calcDisc)

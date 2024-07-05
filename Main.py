@@ -253,7 +253,7 @@ class IMS:
                 address_entry.config(state='disabled')
                 textArea.config(state="normal")   
                 textArea.delete(1.0,END)
-                message = f"Name: {name}\n Phone: {phone} \n Address: {address}\n"
+                message = f"Name: {name}\nPhone: {phone} \nAddress: {address}\n"
                 textArea.insert(END,'------------------TAX INVOICE--------------\n\n')
                 textArea.insert(END,'CUSTOMER DETAILS\n')
                 textArea.insert(END,'-------------------------------------------------') 
@@ -313,7 +313,7 @@ class IMS:
 
                     if quantity <= rem_quant:
                         total_price = product_price * quantity
-                        text_area_content += f"{product_name}\t{quantity}\t{product_price:.1f}\t{total_price:.1f}\n"
+                        text_area_content += f"{product_name}\t                     {quantity}\t      {product_price:.1f}\t      {total_price:.1f}\n"
                         cumulative_total += total_price
 
                         cursor.execute("UPDATE productlist SET quantity=? WHERE pro_name=?", (rem_quant - quantity, product_name))
@@ -342,6 +342,7 @@ class IMS:
 
             # Disable textArea to prevent user editing
             textArea.config(state="disabled")
+            loadProducts()
         def finalBill():
             textArea.config(state="normal") 
             textArea.insert(END,'-------------------------------------------------')
@@ -519,22 +520,22 @@ class IMS:
         moneyFrame.place(x=440,y=300,width=290,height=310)
         l1 = Label(moneyFrame,text="OPTIONS",bg="#5FA8D3",fg="#CAE9FF",font=("Arial",16,"bold"),height=2,relief=RAISED).pack(side=TOP,fill=X)
 
-        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=addItem,bg="#62B6CB",fg="white").place(x=30,y=75)
+        adD = Button(moneyFrame,text="Add",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=addItem,bg="#62B6CB",fg="white").place(x=30,y=190)
 
-        resetBtn = Button(moneyFrame,text="Reset",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=resetDash)
-        resetBtn.place(x=150,y=75)
+        resetBtn = Button(moneyFrame,text="Reset",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,command=resetDash,bg="#1B4965",fg="white")
+        resetBtn.place(x=150,y=190)
 
         totalLabel = Label(moneyFrame,text="TotalCost : ",font=("Calibri",12,"bold"),bg="white")
-        totalLabel.place(x=30,y=150)
+        totalLabel.place(x=30,y=130)
 
         totalCostBox = tk.Entry(moneyFrame,width=13,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white",state="disabled")
-        totalCostBox.place(x=120,y=150,height=32)
+        totalCostBox.place(x=120,y=130,height=32)
 
         quantityLabel = Label(moneyFrame,text="Quantity : ",font=("Calibri",12,"bold"),bg="white")
-        quantityLabel.place(x=30,y=200)
+        quantityLabel.place(x=30,y=75)
 
         quantityBox = tk.Entry(moneyFrame,width=7,bd=1,relief=SOLID,justify="center",font=("Arial",12),bg="white")
-        quantityBox.place(x=120,y=200,height=35)
+        quantityBox.place(x=150,y=75,height=35)
 
 
         TotalBtn = Button(moneyFrame,text="Total",font=("Arial",11,"bold"),width=9,height=2,relief=RAISED,bg="#62B6CB",fg="white",command=finalBill).place(x=30,y=250)
@@ -580,22 +581,22 @@ class IMS:
         # Labels and Entry fields for Name, Phone Number, and Address
         name_label = Label(details_frame, text="Name:", font=("Arial", 12, "bold"))
         name_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        name_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
-        name_entry.grid(row=0, column=1, padx=5, pady=10, sticky="w")
+        name_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white",justify=CENTER)
+        name_entry.grid(row=0, column=1, padx=5, pady=10, sticky="w",ipady=5)
         name_entry.focus()
 
         phone_label = Label(details_frame, text="Phone Number:", font=("Arial", 12, "bold"))
         phone_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         phone_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
-        phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w")
+        phone_entry.grid(row=1, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         address_label = Label(details_frame, text="Address:", font=("Arial", 12, "bold"))
         address_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
         address_entry = tk.Entry(details_frame, width=20, font=("Arial", 12),bd=1,relief=SOLID, bg="white")
-        address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w")
+        address_entry.grid(row=2, column=1, padx=5, pady=10, sticky="w",ipady=5)
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)
-        submit_button.place(x=180, y= 135)
+        submit_button.place(x=180, y= 149)
 
 
 main_window = Tk()

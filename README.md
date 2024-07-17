@@ -40,9 +40,6 @@ The SciPy Billing and Inventory Management system is a desktop application devel
 2. Navigate to the project directory:
    ```bash
    cd SciPy-Bills-Inventory-Management
-3. Navigate to the project directory:
-   ```bash
-   cd SciPy-Bills-Inventory-Management
    
 ## Usage
 1. Run the main application

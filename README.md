@@ -4,12 +4,15 @@
 The SciPy Billing and Inventory Management system is a desktop application developed using Python's Tkinter library. It utilizes SQLite for efficient database management. The application is structured into two main sections: Product Management (Admin) and Dashboard.
 
 ## Features
-- **Login Panel**: Secure access to the product management panel via username(admin) and password (12345).
+  ![image](https://github.com/user-attachments/assets/0705c610-f749-4c59-8f82-91b1c4c7eb7c)
+- **Login Panel**: Secure access to the product management panel via username(admin) and password (12345).</br>
+    ![image](https://github.com/user-attachments/assets/70c2568b-04fb-44e2-b52d-7aabc0de2b93)
 - **Product Management**:
   - Add new products with fields for name, ID, price, and quantity.
   - Update existing product details.
   - Delete products from the database.
-  - Display a list of all products.
+  - Display a list of all products.</br>
+    ![image](https://github.com/user-attachments/assets/8c243ccb-e68e-41a9-9c78-4fec52a4c2ef)
 - **Dashboard**:
   - Enter customer details (name, phone number, and address).
   - View product list to select items and add them to the bill area.
@@ -59,12 +62,12 @@ The SciPy Billing and Inventory Management system is a desktop application devel
 └── requirements.txt       # List of dependencies
 ```
 ## Database Structure
-Database Name: ProductList.db</br>
-Table: productlist
-- pro_name (TEXT): Name of the product.
-- pro_id (TEXT): Unique product identifier.
-- price (REAL): Price of the product.
-- quantity (INTEGER): Available quantity of the product.
+-Database Name: ProductList.db
+-Table: productlist
+  - pro_name (TEXT): Name of the product.
+  - pro_id (TEXT): Unique product identifier.
+  - price (REAL): Price of the product.
+  - quantity (INTEGER): Available quantity of the product.
 
 ## Contributing
 Contributions are welcome! Please follow these steps to contribute:

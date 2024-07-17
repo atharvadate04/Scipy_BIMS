@@ -62,7 +62,7 @@ The SciPy Billing and Inventory Management system is a desktop application devel
 └── requirements.txt       # List of dependencies
 ```
 ## Database Structure
-Database Name: ProductList.db
+Database Name: ProductList.db</br>
 Table: productlist
 - pro_name (TEXT): Name of the product.
 - pro_id (TEXT): Unique product identifier.
@@ -94,14 +94,14 @@ Thank you for your contributions!
 
 ## Contact
 - Chitraksh
-  [Email]((chitrakshchavan4@gmail.com))
-  [Linkedin]((https://www.linkedin.com/in/chitraksh-chavan-937771254/))
+  [Email](chitrakshchavan4@gmail.com)
+  [Linkedin](https://www.linkedin.com/in/chitraksh-chavan-937771254/)
   [GitHub](https://github.com/Chitraksh09error)
 - Atharva
-  [Email]((atharva40date@gmail.com))
+  [Email](atharva40date@gmail.com)
   [Linkedin](https://www.linkedin.com/in/atharva-date-44278328a/)
   [GitHub](https://github.com/atharvadate04/)
 - Jagdish
-  [Email]((jagdishkachhawahjk@gmail.com))
+  [Email](jagdishkachhawahjk@gmail.com)
   [Linkedin](linkedin.com/in/jagdish-kachhawah-21jk)
-  [ GitHub](https://github.com/jagdish-kachhawah)
+  [GitHub](https://github.com/jagdish-kachhawah)

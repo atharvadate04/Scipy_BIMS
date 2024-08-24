@@ -11,7 +11,7 @@ class IMS:
         self.main_window = main_window
         self.main_window.geometry("1380x700+0+0")
         self.main_window.title("Scipy Bills and Inventory Management")
-        self.main_window.iconbitmap("Dmart .ico")
+        self.main_window.iconbitmap("Dmart.ico")
         self.main_window.configure(bg="#BEE9E8")
         self.titleIcon = PhotoImage(file="SciPy.png")
 
@@ -663,8 +663,6 @@ class IMS:
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)
         submit_button.place(x=180, y= 149)
-
-
 main_window = Tk()
 mainObj=IMS(main_window)
 

@@ -663,8 +663,6 @@ class IMS:
 
         submit_button = Button(details_frame, text="Submit", relief=RAISED,bg="#1B4965",fg="white",font=("Arial",10,"bold"), command=submit_customer_details)
         submit_button.place(x=180, y= 149)
-
-
 main_window = Tk()
 mainObj=IMS(main_window)
 
